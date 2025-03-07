@@ -1,0 +1,14 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: Shovel
+metadata:
+  name: site1-to-hub
+  namespace: default
+spec:
+  name: "site1-to-hub"
+  uriSecret:
+    # secret must be created in the same namespace as this Shovel object; in this case 'rabbitmq-system'
+    name: site1-to-hub-secret
+  srcQueue: "event-queue"
+  destExchange: "event-exchange"
+  rabbitmqClusterReference:
+    name: rabbitmq-site1

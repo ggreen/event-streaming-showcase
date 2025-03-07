@@ -1,0 +1,8 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: Vhost
+metadata:
+  name: rabbit-app-vhost
+spec:
+  name: app # vhost name
+  rabbitmqClusterReference:
+    name: rabbitmq  # rabbitmqCluster must exist in the same namespace as this resource

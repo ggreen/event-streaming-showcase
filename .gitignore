@@ -1,17 +1,65 @@
+nohup.out
 target/
+build/
+**/bin/**
 pom.xml.tag
+*.gfs.csv
 pom.xml.releaseBackup
 pom.xml.versionsBackup
+gradle.properties
 pom.xml.next
+secret/
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-# https://github.com/takari/maven-wrapper#usage-without-binary-jar
-.mvn/wrapper/maven-wrapper.jar
-
-# Eclipse m2e generated files
-# Eclipse Core
+runtime/
+*.log
+*.jks
 .project
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
+.settings/
+*.keystore
+junit-tools-generatedsrc/
+.DS_Store
+.idea/
+*.iml
+
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+
+# Visual Studio Code
+.vscode
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+obj/
+**/[Bb]in/**
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio 2015
+.vs/
+
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
+
+/cloud/k8/tmc/

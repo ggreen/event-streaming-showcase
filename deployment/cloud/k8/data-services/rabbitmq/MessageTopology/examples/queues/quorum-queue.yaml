@@ -1,0 +1,15 @@
+# For more information about what/how to configure for quorum queues, see: https://www.rabbitmq.com/quorum-queues.html.
+# We recommmend configuring queues through policies to manage them in groups and be able to update queue configurations later on.
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Queue
+metadata:
+  name: rabbit-app-quorum
+spec:
+  name: app-quorum # name of the queue
+  vhost: "app" # default to '/' if not provided
+  type: quorum # without providing a queue type, rabbitmq creates a classic queue
+  autoDelete: false
+  durable: true # setting 'durable' to false means this queue won't survive a server restart
+  rabbitmqClusterReference:
+    name: rabbitmq # rabbitmqCluster must exist in the same namespace as this resource
