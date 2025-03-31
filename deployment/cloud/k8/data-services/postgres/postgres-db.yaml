@@ -1,15 +1,22 @@
 apiVersion: sql.tanzu.vmware.com/v1
 kind: Postgres
 metadata:
-  name: postgres-app-db
+  name: postgres-db
 spec:
   imagePullSecret:
     name: regsecret
-  storageClassName: standard
+#  storageClassName:
+#  storageClassName: tanzu-data-services
+#  storageClassName: standard
+#  storageClassName: gp2
+  storageClassName: aws-eks-storage
   storageSize: 800M
-#  serviceType: LoadBalancer
+  serviceType: LoadBalancer
   resources:
     data:
+#      limits:
+#        cpu: 1200m
+#        memory: 1000Mi
       requests:
         cpu: 1000m
         memory: 800Mi
