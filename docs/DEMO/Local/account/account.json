@@ -1,0 +1,19 @@
+{
+  "id" : "001",
+  "name" : "Account 1",
+  "type"  : "PERSONAL",
+  "customer" : {
+    "firstName" : "John",
+    "lastName" : "Peter",
+    "primaryContact" : {
+      "email" : "jpeter@email",
+      "phone" : "555-555-5555"
+    }
+  },
+  "location" : {
+    "address1" : "555 Straight Street",
+    "cityTown" : "Jersey City",
+    "stateProvince" : "NJ",
+    "country" : "USA"
+  }
+}

@@ -1,0 +1,29 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 3
+  service:
+    type: LoadBalancer
+  image: rabbitmq:3.13-management
+  # image: rabbitmq:3.13.1-management
+  resources:
+    requests:
+      cpu: 300m
+      memory: 800Mi
+    limits:
+      cpu: 300m
+      memory: 800Mi
+  persistence:
+    storage: 2Gi
+  rabbitmq:
+    additionalPlugins:
+      - rabbitmq_mqtt
+      - rabbitmq_shovel
+      - rabbitmq_stream
+      - rabbitmq_management
+      - rabbitmq_prometheus
+      - rabbitmq_stream
+      - rabbitmq_stream_management
+      - rabbitmq_stream_prometheus
