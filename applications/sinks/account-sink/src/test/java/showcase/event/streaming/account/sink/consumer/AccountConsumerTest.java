@@ -1,35 +1,35 @@
-package showcase.event.stream.rabbitmq.account.http.source.controller;
+package showcase.event.streaming.account.sink.consumer;
 
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
-import nyla.solutions.core.patterns.integration.Publisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import showcase.event.streaming.account.sink.repository.AccountRepository;
 import showcase.streaming.event.account.domain.Account;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class AccountControllerTest {
+class AccountConsumerTest {
 
     private Account account = JavaBeanGeneratorCreator.of(Account.class).create();
-    private AccountController subject;
-
     @Mock
-    private Publisher<Account> publisher;
+    private AccountRepository repository;
+    private AccountConsumer subject;
 
     @BeforeEach
     void setUp() {
-        subject = new AccountController(publisher);
+        subject = new AccountConsumer(repository);
     }
 
     @Test
-    void publish() {
+    void accept() {
+        subject.accept(account);
 
-        subject.publish(account);
-
-        verify(publisher).send(account);
+        verify(repository).save(any());
     }
 }

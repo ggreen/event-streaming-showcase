@@ -12,6 +12,7 @@
 
     <modules>
         <module>components/stream-account-domain</module>
+        <module>components/account-domain</module>
          <module>applications/sources/event-account-http-source</module>
         <module>applications/sinks/event-account-jdbc-sink</module>
         <module>applications/sources/account-generator-amqp-source</module>
@@ -21,13 +22,13 @@
         <module>applications/sinks/event-log-sink</module>
         <module>applications/sinks/mqtt-log-sink</module>
         <module>applications/sinks/jdbc-upsert</module>
+        <module>applications/sinks/account-sink</module>
         <module>applications/sources/http-mqtt-source</module>
-<!--        <module>applications/rabbit-streams-web-app</module>-->
-        <module>applications/mqtt-jdbc</module>
-        <module>applications/timeout-api</module>
+        <module>applications/sinks/mqtt-jdbc</module>
+        <module>applications/apis/timeout-api</module>
         <module>applications/sinks/api-throttling-sink</module>
-        <module>applications/rabbit-consumer</module>
-        <module>applications/rabbit-publisher</module>
+        <module>applications/sinks/rabbit-consumer</module>
+        <module>applications/sources/rabbit-publisher</module>
         <module>applications/processors/jdbc-sql-processor</module>
         <module>applications/processors/csv-json-processor</module>
         <module>applications/processors/json-xml-processor</module>

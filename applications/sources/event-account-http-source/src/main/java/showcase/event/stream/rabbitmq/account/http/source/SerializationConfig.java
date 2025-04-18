@@ -2,10 +2,10 @@ package showcase.event.stream.rabbitmq.account.http.source;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vmware.tanzu.data.services.rabbitmq.streaming.account.domain.Account;
 import nyla.solutions.core.patterns.conversion.Converter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import showcase.streaming.event.account.domain.Account;
 
 @Configuration
 public class SerializationConfig {

@@ -1,7 +1,5 @@
 package showcase.event.stream.rabbitmq.account.http.source;
 
-import com.rabbitmq.stream.Producer;
-import com.vmware.tanzu.data.services.rabbitmq.streaming.account.domain.Account;
 import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.patterns.conversion.Converter;
 import nyla.solutions.core.patterns.integration.Publisher;
@@ -11,13 +9,11 @@ import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import static java.lang.String.valueOf;
+import showcase.streaming.event.account.domain.Account;
 
 @Configuration
 @Slf4j

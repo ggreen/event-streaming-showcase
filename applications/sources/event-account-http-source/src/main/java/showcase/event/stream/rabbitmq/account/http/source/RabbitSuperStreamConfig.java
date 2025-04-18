@@ -9,7 +9,6 @@ package showcase.event.stream.rabbitmq.account.http.source;
 
 import com.rabbitmq.stream.Environment;
 import com.rabbitmq.stream.Producer;
-import com.vmware.tanzu.data.services.rabbitmq.streaming.account.domain.Account;
 import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.patterns.conversion.Converter;
 import nyla.solutions.core.patterns.integration.Publisher;
@@ -18,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.rabbit.stream.config.SuperStream;
+import showcase.streaming.event.account.domain.Account;
 
 import static java.lang.String.valueOf;
 

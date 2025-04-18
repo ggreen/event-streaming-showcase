@@ -1,4 +1,5 @@
 
+
 ```shell
 k apply -f cloud/k8/data-services/rabbitmq/vmware-rabbitmq-1-node.yml
 ```
