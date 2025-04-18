@@ -1,6 +1,6 @@
 package showcase.rabbitmq.event.streaming.timeout.controller;
 
-import com.vmware.tanzu.data.services.rabbitmq.streaming.account.domain.Account;
+import showcase.streaming.event.rabbitmq.streaming.account.domain.Account;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
