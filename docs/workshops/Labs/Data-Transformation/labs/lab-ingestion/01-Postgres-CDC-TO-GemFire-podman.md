@@ -28,7 +28,7 @@ See [SCDF Getting-Started](00-SCDF-Getting-Started.md) for details on starting S
 Run the following to Start Postgres in Docker.
 
 ```shell
-docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.3.3.Final
+podman run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.3.3.Final
 ```
 
 -------------------
@@ -38,19 +38,19 @@ docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e PO
 Run the following to create a Docker network for the GemFire locator and server members to communicate.
 
 ```shell
-docker network create gf-network
+podman network create gf-network
 ```
 
 Run the following to Start a GemFire Locator in Docker.
 
 ```shell
-docker run -it -e 'ACCEPT_TERMS=y' --rm --name gf-locator --network=gf-network -p 10334:10334 -p 1099:1099 -p 7070:7070 gemfire/gemfire:9.15.6 gfsh start locator --name=locator1 --jmx-manager-hostname-for-clients=127.0.0.1 --hostname-for-clients=127.0.0.1
+podman run -it -e 'ACCEPT_TERMS=y' --rm --name gf-locator --network=gf-network -p 10334:10334 -p 1099:1099 -p 7070:7070 gemfire/gemfire:9.15.6 gfsh start locator --name=locator1 --jmx-manager-hostname-for-clients=127.0.0.1 --hostname-for-clients=127.0.0.1
 ```
 
 Run the following to Start a GemFire Server in Docker.
 
 ```shell
-docker run -it -e 'ACCEPT_TERMS=y' --rm --name gf-server1 --network=gf-network -p 40404:40404 gemfire/gemfire:9.15.6 gfsh start server --name=server1 --locators=gf-locator\[10334\] --hostname-for-clients=127.0.0.1
+podman run -it -e 'ACCEPT_TERMS=y' --rm --name gf-server1 --network=gf-network -p 40404:40404 gemfire/gemfire:9.15.6 gfsh start server --name=server1 --locators=gf-locator\[10334\] --hostname-for-clients=127.0.0.1
 ```
 
 ### Setup GemFire regions
@@ -60,7 +60,7 @@ The inventory custer data will be stored in a "customers" GemFire region.
 Execute the following to start the GemFire Gfsh interactive shell on the locator
 
 ```shell
-docker exec -it gf-locator gfsh
+podman exec -it gf-locator gfsh
 ```
 
 In Gfsh use the following command to connect to the locator
@@ -75,6 +75,31 @@ In Gfsh use the following command to create the customers GemFire region
 create region --name=customers --type=PARTITION
 ```
 
+
+--------------
+
+## Start GemFire Management Console
+
+
+```shell
+podman run -it --rm --name gideon --network gf-network  -e "SERVER_PORT=7575" -p 7575:7575 gemfire/gemfire-management-console
+```
+
+Open 
+
+```shell
+open http://localhost:7575
+```
+
+Connect
+
+```properties
+Nickname=gemfire
+Host=gf-locator
+Port=7070
+
+```
+
 ------------------
 
 ## Setup RabbitMQ
@@ -82,7 +107,7 @@ create region --name=customers --type=PARTITION
 If not running
 
 ```shell
-docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+podman run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
 ```
 ------------------
 
@@ -119,7 +144,7 @@ Once the stream is deployed you can view the initial GemFire data using Gfsh.
 In the Gfsh
 
 ```shell
-docker exec -it gf-locator gfsh
+podman exec -it gf-locator gfsh
 ```
 
 Connect to the locator
@@ -139,7 +164,7 @@ query --query="select * from /customers"
 Connect to Postgres database using psql
 
 ```shell
-docker exec -it postgres psql -d postgres -U postgres
+podman exec -it postgres psql -d postgres -U postgres
 ```
 
 Select current data
@@ -160,4 +185,19 @@ View Data in GemFire GFSH shell
 
 ```shell
 query --query="select * from /customers"
+```
+
+
+
+# Cleanup
+
+
+```gfsh
+remove --region=customers --key=1001 --key-class=java.lang.Short
+remove --region=customers --key=1002 --key-class=java.lang.Short
+remove --region=customers --key=1003 --key-class=java.lang.Short
+remove --region=customers --key=1004 --key-class=java.lang.Short
+remove --region=customers --key=1005 --key-class=java.lang.Short
+remove --region=customers --key=1006 --key-class=java.lang.Short
+ 
 ```

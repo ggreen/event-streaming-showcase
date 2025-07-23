@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: event-account-http-source-filter
+    run:  event-account-http-source-filter
+  name:  event-account-http-source-filter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name:  event-account-http-source-filter
+  template:
+    metadata:
+      labels:
+        name:  event-account-http-source-filter
+    spec:
+      containers:
+        - env:
+            - name: spring.rabbitmq.host
+              value: rabbitmq
+            - name: spring.rabbitmq.stream.host
+              value: rabbitmq
+            - name: server.port
+              value: "8080"
+            - name: spring_rabbitmq_username
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: username
+            - name: spring.rabbitmq.password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: password
+            - name: spring.cloud.stream.bindings.output.destination
+              value: "showcase.event.filter.streaming.accounts"
+            - name: rabbitmq.streaming.partitions
+              value: "2"
+            - name: spring.profiles.active
+              value: "stream"
+            - name: rabbitmq.streaming.use.filter
+              value: "true"
+          image: cloudnativedata/event-account-http-source:0.0.1-SNAPSHOT
+          name: event-account-http-source-filter
+          imagePullPolicy: Always
+#          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-account-http-source-filter
+spec:
+  selector:
+    name: event-account-http-source-filter
+  ports:
+    - protocol: TCP
+      port: 8090
+      targetPort: 8080
+  type: LoadBalancer

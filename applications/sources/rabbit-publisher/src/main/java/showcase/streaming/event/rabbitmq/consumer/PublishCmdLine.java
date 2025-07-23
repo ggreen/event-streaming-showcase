@@ -4,7 +4,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import nyla.solutions.core.util.Config;
-import nyla.solutions.core.util.settings.ConfigSettings;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
