@@ -1,0 +1,7 @@
+applications:
+  - name: insurance-valkey-console-app
+    memory: 1G
+    services:
+      - valkey
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+}}'

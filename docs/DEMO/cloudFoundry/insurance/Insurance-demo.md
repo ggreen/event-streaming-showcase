@@ -72,6 +72,8 @@ sink.jdbc-upsert=maven://com.github.ggreen:jdbc-upsert:0.2.1
 sink.jdbc-upsert.bootVersion=3
 processor.jdbc-sql-processor=maven://com.github.ggreen:jdbc-sql-processor:0.0.1
 processor.jdbc-sql-processor.bootVersion=3
+sink.valkey-sink=maven://com.github.ggreen:valkey-sink:0.0.1
+sink.valkey-sink.bootVersion=3
 ```
 
 -------------------------------
@@ -176,7 +178,7 @@ WARNING WORK IN PROGRESS
 Create SCDF stream
 
 ```shell
-claims-caching-http=http | tanzu-sql-select: jdbc-sql-processor --query="select id, payload->> 'lossType' as lossType, payload-> 'insured' ->> 'name' as name, concat( payload->'insured'->'homeAddress' ->> 'street', ', ', payload->'insured'->'homeAddress' ->> 'city', ', ', payload ->'insured'->'homeAddress' ->> 'state', ' ', payload -> 'insured'->'homeAddress' ->> 'zip') as homeAddress from insurance.claims WHERE id= :id" | valkey: redis --key-expression=payload.id
+claims-caching-http=http | tanzu-sql-select: jdbc-sql-processor --query="select id, payload->> 'lossType' as lossType, payload-> 'insured' ->> 'name' as name, concat( payload->'insured'->'homeAddress' ->> 'street', ', ', payload->'insured'->'homeAddress' ->> 'city', ', ', payload ->'insured'->'homeAddress' ->> 'state', ' ', payload -> 'insured'->'homeAddress' ->> 'zip') as homeAddress from insurance.claims WHERE id= :id" | valkey-sink --valKey.consumer.key.prefix="insurance-claims-"
 ```
 
 Deploy using Proeprties
@@ -184,15 +186,16 @@ Deploy using Proeprties
 ```properties
 deployer.tanzu-sql-select.cloudfoundry.services=postgres
 app.tanzu-sql-select.jdbc.sql.query="select id, payload->> 'lossType' as lossType, payload-> 'insured' ->> 'name' as name, concat( payload->'insured'->'homeAddress' ->> 'street', ', ', payload->'insured'->'homeAddress' ->> 'city', ', ', payload ->'insured'->'homeAddress' ->> 'state', ' ', payload -> 'insured'->'homeAddress' ->> 'zip') as homeAddress from insurance.claims WHERE id= :id"
+app.valkey-sink.valKey.consumer.key.prefix=insurance-claims-
 deployer.tanzu-sql-select.bootVersion=3
 deployer.http.bootVersion=2
 deployer.jdbc.bootVersion=3
 app.http.spring.cloud.stream.rabbit.binder.connection-name-prefix=http
-app.valkey.spring.cloud.stream.rabbit.binder.connection-name-prefix=valkey
-app.valkey.redis.consumer.key-expression=payload.id
-deployer.valkey.cloudfoundry.services=valkey
+app.valkey-sink.spring.cloud.stream.rabbit.binder.connection-name-prefix=valkey
+app.valkey.redis.consumer. key-expression=payload.id
+deployer.valkey-sink.cloudfoundry.services=valkey
 deployer.http.memory=1400
-deployer.valkey.memory=1400
+deployer.valkey-sink.memory=1400
 deployer.tanzu-sql-select.memory=1400
 ```
 
@@ -215,19 +218,18 @@ open $VALKEY_HOST_URI
 
 
 
-
-
 Command in Console
 
+Execute Valkey command
 ```shell
- LRANGE 1 0 0
+ keys *
 ```
 
 Or Get using Curl No Data
-```shell
-curl -X 'GET' \
-  "$VALKEY_HOST_URI/valKey/lrange?key=1&start=0&end=0" \
-  -H 'accept: */*'
+
+Execute Valkey command
+```valkey
+GET ValKeyConsumer-1
 ```
 
 Cache First Claim
@@ -239,22 +241,18 @@ curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content
 
 Get claim
 
-
-```shell
-curl -X 'GET' \
-  "$VALKEY_HOST_URI/valkey/lrange?key=1&start=0&end=0" \
-  -H 'accept: */*'
+Execute Valkey command
+```valkey
+GET ValKeyConsumer-1
 ```
 
 
 Second Claim - No Data
 
-```shell
-curl -X 'GET' \
-  "$VALKEY_HOST_URI/valkey/lrange?key=2&start=0&end=0" \
-  -H 'accept: */*'
+Execute Valkey command
+```valkey
+GET ValKeyConsumer-1
 ```
-
 
 Cache Second Claim in ValKey
 
@@ -263,12 +261,16 @@ curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content
 ```
 
 
-Get Cache 2n claim
+Get Cache 2nd claim
 
 ```shell
-curl -X 'GET' \
-  "$VALKEY_HOST_URI/valkey/lrange?key=2&start=0&end=0" \
-  -H 'accept: */*'
+GET ValKeyConsumer-2
+```
+
+Cache Second Claim in ValKey
+
+```shell
+curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content-Type: application/json"  -X POST -d "{ \"id\": \"2\" }"
 ```
 
 

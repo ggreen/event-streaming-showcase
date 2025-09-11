@@ -1,0 +1,7 @@
+applications:
+  - name: insurance-jdbc-sql-console
+    memory: 1G
+    services:
+      - postgres
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+}}'
