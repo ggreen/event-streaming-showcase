@@ -1,3 +1,8 @@
+# Insurance Demo
+
+
+Example Claims JSON data
+
 ```json
 
     {
@@ -22,74 +27,90 @@
 
 ```
 
-
-
 # Setup
 
-## Register Custom Apps
+Setup Services
 
-### sink.jdbc-upsert 
-
-From properties
-
-```properties
-sink.jdbc-upsert=https://tanzu-scdf-data.s3.us-east-1.amazonaws.com/jdbc-upsert-0.2.0-SNAPSHOT.jar
-sink.jdbc-upsert.metadata=https://tanzu-scdf-data.s3.us-east-1.amazonaws.com/jdbc-upsert-0.2.0-SNAPSHOT-metadata.jar
-sink.jdbc-upsert.bootVersion=3
+Valkey
+```shell
+cf create-service p.redis on-demand-cache valkey
 ```
 
-#### processor.jdbc-sql-processor
+Postgres
 
-From properties
+```shell
+cf create-service postgres on-demand-postgres-db postgres
+```
+
+
+Download Applications
+
+```shell
+mkdir -p runtime/apps
+wget -P runtime/apps https://github.com/ggreen/spring-modern-data-architecture/releases/download/expore-2025/valkey-console-app-0.0.2.jar
+wget -P runtime/apps  https://github.com/ggreen/spring-modern-data-architecture/releases/download/expore-2025/jdbc-sql-console-app-0.0.4.jar
+```
+
+Cf push
+
+```shell
+cf push insurance-jdbc-sql-console -f deployment/cloud/cloudFoundry/apps/insurance/jdbc-console.yaml -b java_buildpack_offline -p runtime/apps/jdbc-sql-console-app-0.0.4.jar
+```
+
+Valkey Console
+
+```shell
+cf push insurance-valkey-console-app -f deployment/cloud/cloudFoundry/apps/insurance/valkey-console.yaml -b java_buildpack_offline -p runtime/apps/valkey-console-app-0.0.2.jar
+```
+
+**Register Custom Apps In SCDF**
+
+Add Applications using properties
 
 ```properties
-processor.jdbc-sql-processor=https://tanzu-scdf-data.s3.us-east-1.amazonaws.com/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
-processor.jdbc-sql-processor.metadata=https://tanzu-scdf-data.s3.us-east-1.amazonaws.com/jdbc-sql-processor-0.0.1-SNAPSHOT-metadata.jar
+sink.jdbc-upsert=maven://com.github.ggreen:jdbc-upsert:0.2.1
+sink.jdbc-upsert.bootVersion=3
+processor.jdbc-sql-processor=maven://com.github.ggreen:jdbc-sql-processor:0.0.1
 processor.jdbc-sql-processor.bootVersion=3
 ```
 
-----------------------------
+-------------------------------
+
+# Start Demo
 
 
-# Protocols Supported
-
-# SCDF Pre-built connectors
-
-
-# Create Table
-
+## Create Table
 
 
 ```shell
-export JDBC_CONSOLE_APP=`cf apps | grep jdbc-sql-console-app  | awk  '{print $5}'`
+export JDBC_CONSOLE_APP=`cf apps | grep insurance-jdbc-sql-console  | awk  '{print $5}'`
 echo $JDBC_CONSOLE_APP
 
 open http://$JDBC_CONSOLE_APP
 ```
 
 
+Create SQL in the JDBC console
 
-```sqlite-sql
+```sql
 create schema if not exists insurance;
 
-CREATE TABLE insurance.claims(
+CREATE TABLE if not exists  insurance.claims(
    id varchar(255) PRIMARY KEY,
    payload JSONB NOT NULL
 );
 ```
 --------------------------------------
 
-# Create HTTP Json JDBC API
+## Create HTTP JSON JDBC API
 
---spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+Open SCDF Pipeline
 
 ```shell
 claims-http=http| tanzu-sql: jdbc-upsert --insert-sql="UPDATE insurance.claims SET payload=to_json(:payload::json) WHERE id= :id" --update-sql="INSERT INTO insurance.claims (id,payload) VALUES(:id, to_json(:payload::json))"
 ```
-app.http.server.port=80
 
 ```properties
-app.http.server.port=80
 deployer.tanzu-sql.cloudfoundry.services=postgres
 app.tanzu-sql.jdbc.upsert.insert-sql=UPDATE insurance.claims SET payload=to_json(:payload::json) WHERE id= :id
 app.tanzu-sql.jdbc.upsert.update-sql=INSERT INTO insurance.claims (id,payload) VALUES(:id, to_json(:payload::json))
@@ -102,15 +123,17 @@ app.http.spring.cloud.stream.rabbit.binder.connection-name-prefix=http
 Save URIs for API
 ```shell
 export CLAIMS_HOST=`cf apps | grep claims-http-http  | awk  '{print $4}'`
-export CLAIMS_URI="http://$CLAIMS_HOST"
+export CLAIMS_URI="https://$CLAIMS_HOST"
 echo $CLAIMS_URI
 ```
 
+Submit 1 Claim
 ```shell
-
 curl $CLAIMS_URI -L -H "Accept: application/json" --header "Content-Type: application/json"  -X POST -d "{ \"id\": \"1\", \"policyId\": \"11\", \"claimType\": \"auto\", \"description\" : \"\", \"notes\" : \"\", \"claimAmount\": 2323.22, \"dateOfLoss\": \"3/3/20243\", \"insured\": { \"name\": \"Josiah Imani\", \"homeAddress\" : { \"street\" : \"1 Straight\", \"city\" : \"JC\", \"state\" : \"JC\", \"zip\" : \"02323\" } }, \"lossType\": \"Collision\" }"
 ```
 
+
+Submit Multiple Claims
 
 ```shell
 for i in {2..20}
@@ -135,12 +158,18 @@ do
 done
 ```
 
+In the JDBC Console
+
+Execute SQL
 
 ```sql
 select * from insurance.claims
 ```
 
---------------------------------------
+-------------------------------------
+
+
+WARNING WORK IN PROGRESS
 
 #  HTTP ValKey JDBC Caching Enrichment API
 
@@ -149,6 +178,8 @@ Create SCDF stream
 ```shell
 claims-caching-http=http | tanzu-sql-select: jdbc-sql-processor --query="select id, payload->> 'lossType' as lossType, payload-> 'insured' ->> 'name' as name, concat( payload->'insured'->'homeAddress' ->> 'street', ', ', payload->'insured'->'homeAddress' ->> 'city', ', ', payload ->'insured'->'homeAddress' ->> 'state', ' ', payload -> 'insured'->'homeAddress' ->> 'zip') as homeAddress from insurance.claims WHERE id= :id" | valkey: redis --key-expression=payload.id
 ```
+
+Deploy using Proeprties
 
 ```properties
 deployer.tanzu-sql-select.cloudfoundry.services=postgres
@@ -164,47 +195,43 @@ deployer.http.memory=1400
 deployer.valkey.memory=1400
 deployer.tanzu-sql-select.memory=1400
 ```
-Get Data for Valkey
 
 
-HTTP POST
-
-
-Get Environment
+Get Data Pipeline HTTP URL
 
 ```shell
 export HTTP_CACHE_CLAIMS_HOST=`cf apps | grep claims-caching-http-http  | awk  '{print $4}'`
-export HTTP_CACHE_CLAIMS_HOST_URI="http://$HTTP_CACHE_CLAIMS_HOST"
+export HTTP_CACHE_CLAIMS_HOST_URI="https://$HTTP_CACHE_CLAIMS_HOST"
 echo $HTTP_CACHE_CLAIMS_HOST_URI
 ```
 
 VaKey Access App
 
 ```shell
-export VALKEY_HOST=`cf apps | grep valkey-console-app  | awk  '{print $5}'`
-export VALKEY_HOST_URI="http://$VALKEY_HOST"
+export VALKEY_HOST=`cf apps | grep insurance-valkey-console-app  | awk  '{print $5}'`
+export VALKEY_HOST_URI="https://$VALKEY_HOST"
 open $VALKEY_HOST_URI
 ```
 
 
 
 
-Get using Curl
+
+Command in Console
 
 ```shell
  LRANGE 1 0 0
 ```
 
-No Data
+Or Get using Curl No Data
 ```shell
 curl -X 'GET' \
   "$VALKEY_HOST_URI/valKey/lrange?key=1&start=0&end=0" \
   -H 'accept: */*'
 ```
 
-
-
 Cache First Claim
+
 
 ```shell
 curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content-Type: application/json"  -X POST -d "{ \"id\": \"1\" }"
@@ -212,9 +239,10 @@ curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content
 
 Get claim
 
+
 ```shell
 curl -X 'GET' \
-  "$VALKEY_HOST_URI/valKey/lrange?key=1&start=0&end=0" \
+  "$VALKEY_HOST_URI/valkey/lrange?key=1&start=0&end=0" \
   -H 'accept: */*'
 ```
 
@@ -223,7 +251,7 @@ Second Claim - No Data
 
 ```shell
 curl -X 'GET' \
-  "$VALKEY_HOST_URI/valKey/lrange?key=2&start=0&end=0" \
+  "$VALKEY_HOST_URI/valkey/lrange?key=2&start=0&end=0" \
   -H 'accept: */*'
 ```
 
@@ -239,7 +267,7 @@ Get Cache 2n claim
 
 ```shell
 curl -X 'GET' \
-  "$VALKEY_HOST_URI/valKey/lrange?key=2&start=0&end=0" \
+  "$VALKEY_HOST_URI/valkey/lrange?key=2&start=0&end=0" \
   -H 'accept: */*'
 ```
 
