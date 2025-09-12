@@ -40,6 +40,6 @@ Kubernetes Demos
 - [RabbitMQ monitoring](docs/DEMO/k8/monitoring/RABBITMQ_Monitoring.md)
 
 
-Vertical Based Demos
+Industry Demos
 
 - [Insurance - Claims - DataFlow on Cloud Foundry](docs/DEMO/cloudFoundry/insurance)
