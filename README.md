@@ -38,3 +38,8 @@ Kubernetes Demos
 - [SCDF with Postgres](docs/DEMO/k8/SCDF/SCDF_with_Postgres_k8.md)
 - [API Flow Control Throttling](docs/DEMO/k8/SCDF/API_FLOW_CONTROL_THROTTLING.md)
 - [RabbitMQ monitoring](docs/DEMO/k8/monitoring/RABBITMQ_Monitoring.md)
+
+
+Vertical Based Demos
+
+- [Insurance - Claims - DataFlow on Cloud Foundry](docs/DEMO/cloudFoundry/insurance)
