@@ -42,4 +42,4 @@ Kubernetes Demos
 
 Industry Demos
 
-- [Insurance - Claims - DataFlow on Cloud Foundry](docs/DEMO/cloudFoundry/insurance)
+- [Insurance - Claims - DataFlow on Cloud Foundry](docs/DEMO/cloudFoundry/insurance/Insurance-demo.md)
