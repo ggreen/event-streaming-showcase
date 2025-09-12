@@ -1,5 +1,6 @@
 # Insurance Demo
 
+![claim-architecture.png](img/claim-architecture.png)
 
 Example Claims JSON data
 
@@ -168,20 +169,20 @@ Execute SQL
 select * from insurance.claims
 ```
 
+![query-claims-jdbc-console.png](img/query-claims-jdbc-console.png)
+
 -------------------------------------
 
 
-WARNING WORK IN PROGRESS
-
 #  HTTP ValKey JDBC Caching Enrichment API
 
-Create SCDF stream
+Create SCDF stream pipeline using the following definition
 
 ```shell
 claims-caching-http=http | tanzu-sql-select: jdbc-sql-processor --query="select id, payload->> 'lossType' as lossType, payload-> 'insured' ->> 'name' as name, concat( payload->'insured'->'homeAddress' ->> 'street', ', ', payload->'insured'->'homeAddress' ->> 'city', ', ', payload ->'insured'->'homeAddress' ->> 'state', ' ', payload -> 'insured'->'homeAddress' ->> 'zip') as homeAddress from insurance.claims WHERE id= :id" | valkey-sink --valKey.consumer.key.prefix="insurance-claims-"
 ```
 
-Deploy using Proeprties
+Deploy using the following properties
 
 ```properties
 deployer.tanzu-sql-select.cloudfoundry.services=postgres
@@ -208,7 +209,7 @@ export HTTP_CACHE_CLAIMS_HOST_URI="https://$HTTP_CACHE_CLAIMS_HOST"
 echo $HTTP_CACHE_CLAIMS_HOST_URI
 ```
 
-VaKey Access App
+Access the ValKey Console App
 
 ```shell
 export VALKEY_HOST=`cf apps | grep insurance-valkey-console-app  | awk  '{print $5}'`
@@ -216,21 +217,18 @@ export VALKEY_HOST_URI="https://$VALKEY_HOST"
 open $VALKEY_HOST_URI
 ```
 
-
-
 Command in Console
 
 Execute Valkey command
+
 ```shell
- keys *
+ Keys *
 ```
 
-Or Get using Curl No Data
+![valkey-console-keys.png](img/valkey-console-keys.png)
 
-Execute Valkey command
-```valkey
-GET ValKeyConsumer-1
-```
+
+
 
 Cache First Claim
 
@@ -250,9 +248,12 @@ GET ValKeyConsumer-1
 Second Claim - No Data
 
 Execute Valkey command
+
 ```valkey
-GET ValKeyConsumer-1
+GET insurance-claims-1
 ```
+![valkey-console-get-claim.png](img/valkey-console-get-claim.png)
+
 
 Cache Second Claim in ValKey
 
@@ -264,15 +265,8 @@ curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content
 Get Cache 2nd claim
 
 ```shell
-GET ValKeyConsumer-2
+GET insurance-claims-2
 ```
-
-Cache Second Claim in ValKey
-
-```shell
-curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content-Type: application/json"  -X POST -d "{ \"id\": \"2\" }"
-```
-
 
 -------------
 
@@ -281,21 +275,15 @@ curl $HTTP_CACHE_CLAIMS_HOST_URI -H "Accept: application/json" --header "Content
 ValKey Clean up
 
 ```shell
- DEL 1 2
+ DEL insurance-claims-1 insurance-claims-2
 ```
-
-```shell
-curl -X 'DELETE' \
-  "$VALKEY_HOST_URI/valKey/del?keys=1&keys=2" \
-  -H 'accept: */*'
-```
-
 
 
 ```shell
 open http://$JDBC_CONSOLE_APP
 ```
 
+In JDBC Console
 
 ```sql
 delete from insurance.claims
