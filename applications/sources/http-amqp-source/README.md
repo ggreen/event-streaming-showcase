@@ -1,7 +1,20 @@
 
+Configurations
+
+| Property                                        | Description               |
+|-------------------------------------------------|---------------------------|
+| server.port                                     | HTTP server port          |
+ | spring.rabbitmq.vhost                           | RabbitMQ vhost            |
+| spring.rabbitmq.host                            | RabbitMQ host             |
+| spring.rabbitmq.port                            | RabbitMQ port             |
+| spring.rabbitmq.username                        | RabbitMQ username         |
+| spring.rabbitmq.password                        | RabbitMQ password         |
+ | spring.application.name                         | Application name          |
+ | spring.cloud.stream.bindings.output.destination | Default: http-amqp-source |
+
 
 ```shell
-java -jar applications/http-amqp-source/target/http-amqp-source-0.0.7-SNAPSHOT.jar
+java -jar applications/http-amqp-source/target/http-amqp-source-0.0.8-SNAPSHOT.jar
 ```
 
 ## Docker building image

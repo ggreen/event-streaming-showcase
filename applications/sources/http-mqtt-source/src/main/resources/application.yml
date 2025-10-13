@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: "mqtt-log-source"
+server:
+  port: 8383
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  writer-with-default-pretty-printer: true
+  api-docs:
+    enabled: true
+    version: "openapi_3_0"

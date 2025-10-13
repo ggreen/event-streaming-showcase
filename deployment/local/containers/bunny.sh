@@ -1,0 +1,2 @@
+podman network create tanzu
+podman run -it --rm --network tanzu --name bunny -v "$PWD/deployment/local/containers/rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins" -p 5222:5672 -p 25552:5552 -p 25672:15672  -p  21883:1883 rabbitmq:4.1-management

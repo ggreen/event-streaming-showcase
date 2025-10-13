@@ -15,9 +15,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LogSinkApp {
 
 	public static void main(String[] args) {
-
-		log.info("****** PROPERTIES: {}\n\n\n ENV: {}",System.getProperties(),System.getenv());
 		SpringApplication.run(LogSinkApp.class, args);
 	}
-
 }

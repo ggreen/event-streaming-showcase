@@ -18,16 +18,16 @@ import showcase.event.stream.rabbitmq.log.sink.functions.LogConsumer;
 public class RabbitAmqpConfig {
 
 
-    @Value("${spring.rabbitmq.username}")
+    @Value("${spring.rabbitmq.username:guest}")
     private String username;
 
-    @Value("${spring.rabbitmq.password}")
+    @Value("${spring.rabbitmq.password:guest}")
     private String password;
 
     @Value("${spring.rabbitmq.host:localhost}")
     private String hostname;
 
-    @Value("${spring.rabbitmq.queue:event-log-sink}")
+    @Value("$spring.cloud.stream.bindings.input.destination:event-log-sink}")
     private String queueName;
 
     @Value("${spring.rabbitmq.routing.key:#}")

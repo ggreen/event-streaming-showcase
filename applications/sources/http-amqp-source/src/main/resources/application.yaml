@@ -1,6 +1,4 @@
 spring:
-  rabbitmq:
-    vhost: "/"
   application:
     name: http-amqp-source
 management:

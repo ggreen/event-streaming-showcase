@@ -1,8 +1,8 @@
 package showcase.streaming.event.rabbitmq.streaming.account.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import showcase.streaming.event.rabbitmq.streaming.account.domain.Account
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator
+import nyla.solutions.core.security.user.data.UserProfile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,14 +18,14 @@ internal class HttpPublisherControllerTest{
     private val exchange: String  = "hello"
     private val objectMapper: ObjectMapper = ObjectMapper()
     private lateinit var  rabbitTemplate: RabbitTemplate
-    private lateinit var account : Account
+    private lateinit var account : UserProfile
     private lateinit var subject : HttpPublisherController
 
     @BeforeEach
     internal fun setUp() {
         rabbitTemplate = mock<RabbitTemplate>()
 
-        account = JavaBeanGeneratorCreator.of(Account::class.java).create()
+        account = JavaBeanGeneratorCreator.of(UserProfile::class.java).create()
 
         subject = HttpPublisherController(rabbitTemplate)
     }

@@ -39,7 +39,7 @@ class AmqpRabbitConfig {
     private var applicationName: String? = null
 
     @Bean
-    fun exchange(@Value("\${spring.cloud.stream.bindings.supplier-out-0.destination:http-amqp-source}")
+    fun exchange(@Value("\${spring.cloud.stream.bindings.output.destination:http-amqp-source}")
                  exchangeName: String) : Exchange
     {
         return TopicExchange(exchangeName)

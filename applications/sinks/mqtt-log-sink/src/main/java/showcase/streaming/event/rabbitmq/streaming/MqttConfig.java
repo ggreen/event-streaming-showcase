@@ -37,6 +37,7 @@ public class MqttConfig
     @Bean
     IMqttClient mqttClient() throws MqttException
     {
+        log.info("Subscribing to topic filter: {}, clientId: {}",topicFilter,clientId);
         var mqttClient = new MqttClient(connectionUrl, clientId, new MemoryPersistence());
 
         var options = new MqttConnectOptions();
