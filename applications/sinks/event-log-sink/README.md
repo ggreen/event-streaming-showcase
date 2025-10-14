@@ -7,15 +7,19 @@ It can be used to demonstrate consuming messages from a RabbitMQ Stream.
 
 Configuration
 
-| Property                                       | Description    | 
-|------------------------------------------------|----------------|
-| spring.cloud.stream.bindings.input.destination | Queue name     |
-| spring.profiles.active                         | amqp or stream |
-| spring.rabbitmq.username                       | user name      |
-| spring.rabbitmq.password                       | password       |
-| spring.rabbitmq.host                           | host           |
-| spring.rabbitmq.port                           | port           |
-| spring.rabbitmq.routing.key                    | routing key    |
+| Property                                                              | Description   | 
+|-----------------------------------------------------------------------|---------------|
+| spring.cloud.stream.bindings.input.destination                        | Exchange name |
+| spring.cloud.stream.bindings.input.group                              | Queue name    |
+| spring.cloud.stream.rabbit.bindings.input.consumer.queueNameGroupOnly | true or false |
+| spring.cloud.stream.rabbit.bindings.input.consumer.bindingRoutingKey  | Default #     |
+
+| spring.profiles.active                                                | amqp or stream |
+| spring.rabbitmq.username                                              | user name      |
+| spring.rabbitmq.password                                              | password       |
+| spring.rabbitmq.host                                                  | host           |
+| spring.rabbitmq.port                                                  | port           |
+| spring.rabbitmq.routing.key                                           | routing key    |
 
 
 

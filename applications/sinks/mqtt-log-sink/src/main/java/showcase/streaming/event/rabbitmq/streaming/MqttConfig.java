@@ -14,36 +14,36 @@ import java.nio.charset.StandardCharsets;
  *
  * @author Gregory Green
  */
-@Configuration
 @Slf4j
+@Configuration
 public class MqttConfig
 {
 
-    @Value("${spring.application.name:mqtt-log-sink}")
-    private String clientId = "mqtt-log-sink";
+    @Value("${spring.application.name}")
+    private String clientId;
 
     @Value("${mqtt.connectionUrl:tcp://localhost:1883}")
-    private String connectionUrl = "tcp://localhost:1883";
+    private String connectionUrl;
 
-    @Value("${mqtt.userName:guest}")
-    private String userName = "mqtt";
+    @Value("${mqtt.userName}")
+    private String userName;
 
-    @Value("${mqtt.userPassword:guest}")
-    private String userPassword = "mqtt";
+    @Value("${mqtt.userPassword}")
+    private String userPassword;
 
-    @Value("${mqtt.topic.filter:test}")
+    @Value("${mqtt.topic.filter}")
     private String topicFilter;
 
     @Bean
     IMqttClient mqttClient() throws MqttException
     {
-        log.info("Subscribing to topic filter: {}, clientId: {}",topicFilter,clientId);
+        log.info("Subscribing to topic filter: {}, clientId: {}, connectionUrl: {}",topicFilter,clientId,connectionUrl);
         var mqttClient = new MqttClient(connectionUrl, clientId, new MemoryPersistence());
 
         var options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
-        options.setConnectionTimeout(10);
+//        options.setConnectionTimeout(10);
         options.setUserName(userName);
         options.setPassword(userPassword.toCharArray());
         mqttClient.connect(options);
@@ -53,6 +53,7 @@ public class MqttConfig
             log.info("TOPIC: {} BODY: {}",topic,body);
         };
         mqttClient.subscribe(topicFilter,listener);
+
 
         return mqttClient;
     }

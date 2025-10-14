@@ -1,90 +1,23 @@
 package showcase.event.stream.rabbitmq.log.sink;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import showcase.event.stream.rabbitmq.log.sink.functions.LogConsumer;
+import showcase.event.stream.rabbitmq.log.sink.functions.LoggingConsumer;
 
 @Configuration
 @Slf4j
-@Profile("ampq")
+@Profile("amq")
 public class RabbitAmqpConfig {
-
-
-    @Value("${spring.rabbitmq.username:guest}")
-    private String username;
-
-    @Value("${spring.rabbitmq.password:guest}")
-    private String password;
-
-    @Value("${spring.rabbitmq.host:localhost}")
-    private String hostname;
-
-    @Value("$spring.cloud.stream.bindings.input.destination:event-log-sink}")
-    private String queueName;
-
-    @Value("${spring.rabbitmq.routing.key:#}")
-    private String routingKey;
-
-    @Value("${spring.rabbitmq.exchange:showcase.event.streaming.accounts}")
-    private String exchange;
-
-    @Bean
-    Exchange exchange()
+    public RabbitAmqpConfig()
     {
-
-        return ExchangeBuilder.topicExchange(exchange).build();
+        log.info("Configuring RabbitMQ AMQP");
     }
 
-    @Bean
-    Queue queue()
+    @Bean("loggingConsumer")
+    LoggingConsumer loggingConsumer()
     {
-        return QueueBuilder.durable(queueName).quorum().build();
-    }
-
-    @Bean
-    Binding binding(Queue queue,Exchange exchange)
-    {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey).noargs();
-    }
-
-    @Bean
-    public SimpleMessageListenerContainer messageListenerContainer(
-            ConnectionNameStrategy connectionNameStrategy,
-            MessageListener exampleListener) {
-        var container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(rabbitConnectionFactory(connectionNameStrategy));
-        container.addQueueNames(queueName);
-        container.setMessageListener(exampleListener);
-        return container;
-    }
-
-    @Bean
-    public CachingConnectionFactory rabbitConnectionFactory(
-            ConnectionNameStrategy connectionNameStrategy) {
-        var connectionFactory =
-                new CachingConnectionFactory(hostname);
-        connectionFactory.setUsername(username);
-        connectionFactory.setPassword(password);
-        connectionFactory.setConnectionNameStrategy(connectionNameStrategy);
-        return connectionFactory;
-    }
-
-    @Bean
-    @Primary
-    public MessageListener messageListener(LogConsumer logConsumer) {
-        return new MessageListener() {
-            @Override
-            public void onMessage(Message message) {
-                logConsumer.accept(message.getBody());
-            }
-        };
+        return new LoggingConsumer();//TODO: not sure why this is being create automatically
     }
 }

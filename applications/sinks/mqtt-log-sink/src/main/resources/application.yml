@@ -1,4 +1,4 @@
-:wqspring:
+spring:
   application:
     name: "mqtt-log-sink"
 server:

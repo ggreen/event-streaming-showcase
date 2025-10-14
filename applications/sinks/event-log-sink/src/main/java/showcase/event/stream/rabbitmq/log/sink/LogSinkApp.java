@@ -1,9 +1,3 @@
-/*
- *
- *  * Copyright 2023 VMware, Inc.
- *  * SPDX-License-Identifier: GPL-3.0
- *
- */
 package showcase.event.stream.rabbitmq.log.sink;
 
 import lombok.extern.slf4j.Slf4j;

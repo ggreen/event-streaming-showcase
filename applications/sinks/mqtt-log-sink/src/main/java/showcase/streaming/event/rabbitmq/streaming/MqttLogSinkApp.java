@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MqttLogSinkApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(MqttLogSinkApp.class);
+        SpringApplication.run(MqttLogSinkApp.class,args);
     }
 }
