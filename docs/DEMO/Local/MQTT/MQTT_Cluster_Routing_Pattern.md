@@ -93,7 +93,7 @@ curl -X 'POST' \
   'http://localhost:8383/mqtt?topic=robot%2Ftest' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '"Hello World"'
+  -d '"Payment = $20"'
 ```
 
 
@@ -109,5 +109,15 @@ curl -X 'POST' \
   -H 'accept: application/hal+json' \
   -H 'rabbitContentType: application/json' \
   -H 'Content-Type: application/json' \
-  -d '"Hi Terminal 1"'
+  -d '"Response $40, Terminal: 1"'
 ```
+
+
+MQTT consumer cluster 2
+
+
+```shell
+java -jar applications/sinks/mqtt-log-sink/target/mqtt-log-sink-0.0.2-SNAPSHOT.jar --mqtt.connectionUrl="tcp://localhost:1883" --mqtt.userName=guest --mqtt.userPassword="guest" --mqtt.topic.filter="robot/+" --spring.application.name=mqtt-log-sink
+```
+
+
