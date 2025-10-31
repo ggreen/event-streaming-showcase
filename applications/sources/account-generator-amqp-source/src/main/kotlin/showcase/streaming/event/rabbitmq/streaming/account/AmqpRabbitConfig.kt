@@ -1,7 +1,5 @@
 package showcase.streaming.event.rabbitmq.streaming.account
 
-import showcase.streaming.event.rabbitmq.streaming.account.domain.Account
-import nyla.solutions.core.data.collections.QueueSupplier
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy
