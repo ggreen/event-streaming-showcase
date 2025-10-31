@@ -77,7 +77,7 @@ Default
 - 500 MB Segments
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/performance/lib/stream-perf-test-0.5.0.jar
 ```
 
@@ -86,7 +86,7 @@ java -jar applications/performance/lib/stream-perf-test-0.5.0.jar
 Start Consumers Quorum
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 ```
 ```shell
 java -jar applications/stream-account-geode-sink/target/stream-account-geode-sink-0.0.1-SNAPSHOT.jar
@@ -107,7 +107,7 @@ query --query="select * from /Account"
 Start Publisher
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/stream-account-http-source/target/stream-account-http-source-0.0.1-SNAPSHOT.jar
 ```
 
@@ -138,7 +138,7 @@ select * from evt_locations;
 
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/stream-account-jdbc-sink/target/stream-account-jdbc-sink-0.0.1-SNAPSHOT.jar
 ```
 

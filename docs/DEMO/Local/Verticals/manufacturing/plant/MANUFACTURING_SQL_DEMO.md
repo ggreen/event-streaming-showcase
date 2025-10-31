@@ -52,7 +52,7 @@ cd /Users/devtools/integration/scdf/
 
 
 ```shell
-cd Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase$
+cd Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase$
 kubectl apply -f cloud/k8/data-services/rabbitmq/rabbitmq-1-node.yml
 ```
 
@@ -108,7 +108,7 @@ Kill a process
 ## Cleanup processing running in AWS
 
 ````shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 k delete -f cloud/k8/data-services/rabbitmq/rabbitmq-1-node.yml
 ````
 

@@ -10,8 +10,8 @@ This lab demonstrates ways to set up a RabbitMQ cluster
 
 Example with git
 ```shell
-git clone https://github.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase.git
-cd tanzu-rabbitmq-event-streaming-showcase
+git clone https://github.com/ggreen/event-streaming-showcase.git
+cd event-streaming-showcase
 ```
 
 
@@ -145,7 +145,7 @@ kubectl get pods -n rabbitmq-system
 Create RabbitMQ Cluster (new terminal)
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/rabbitmq-3-node.yml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/rabbitmq-3-node.yml
 ```
 
 Get POD Status
@@ -200,7 +200,7 @@ kubectl delete pod rabbitmq-server-1 --force=true
 
 # 6 - Clean up cluster
 
-Delete the cluster (from directory tanzu-rabbitmq-event-streaming-showcase)
+Delete the cluster (from directory event-streaming-showcase)
 
 ```shell
 kubectl delete -f deployment/cloud/k8/data-services/rabbitmq/rabbitmq-3-node.yml

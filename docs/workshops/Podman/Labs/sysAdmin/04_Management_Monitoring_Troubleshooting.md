@@ -10,8 +10,8 @@
 
 Example with git
 ```shell
-git clone https://github.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase.git
-cd tanzu-rabbitmq-event-streaming-showcase
+git clone https://github.com/ggreen/event-streaming-showcase.git
+cd event-streaming-showcase
 ```
 
 
@@ -49,38 +49,38 @@ kubectl wait pod -l=app.kubernetes.io/name=messaging-topology-operator --for=con
 
 Create User
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/users/app-user.yaml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/users/app-user.yaml
 ```
 
 Create Vhost
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/vhosts/vhost.yaml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/vhosts/vhost.yaml
 ```
 
 Add user Permission
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/permissions/app-permission.yaml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/permissions/app-permission.yaml
 ```
 
 Create Quorum Queue
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/queues/quorum-queue.yaml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/queues/quorum-queue.yaml
 ```
 
 Create Stream
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/queues/stream-queue.yaml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/queues/stream-queue.yaml
 ```
 
 
 Create Exchange - Fanout
 
 ```shell
-kubectl apply -f  https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/exchanges/fanout-exchange.yaml
+kubectl apply -f  https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/MessageTopology/examples/exchanges/fanout-exchange.yaml
 ```
 
 # 2 - Perf Test Monitoring & Troubleshooting 
@@ -88,7 +88,7 @@ kubectl apply -f  https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/
 Start Perf Test
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/apps/rabbitmq-perf-test/perf-test.yml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/rabbitmq-perf-test/perf-test.yml
 ```
 
 View PODs

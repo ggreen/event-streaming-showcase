@@ -83,8 +83,8 @@ app register --name jdbc-sql-processor --type processor  --uri docker:cloudnativ
 From properties
 
 ```properties
-processor.jdbc-sql-processor=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
-processor.jdbc-sql-processor.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT-metadata.jar
+processor.jdbc-sql-processor=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
+processor.jdbc-sql-processor.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT-metadata.jar
 processor.jdbc-sql-processor.bootVersion=3
 ```
 
@@ -143,7 +143,7 @@ curl http://localhost:9994 -H "Accept: application/json" --header "Content-Type:
 Local only
 
 ```shell
-app register --type sink --name jdbc-sql-processor --uri file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
+app register --type sink --name jdbc-sql-processor --uri file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
 ```
 
 

@@ -44,7 +44,7 @@ helm install --wait my-postgres-operator /tmp/postgres-operator/
 kubectl get all | grep postgres
 ------------------------
 
-cd ~/projects/rabbitmq/tanzu-rabbitmq-event-streaming-showcase/
+cd ~/projects/rabbitmq/event-streaming-showcase/
 git pull
 k apply -f cloud/k8/data-services/postgres
 
@@ -67,7 +67,7 @@ Example
     helm install gemfire-operator gemfire-operator-1.0.2.tgz --namespace gemfire-system
     helm ls --namespace gemfire-system
 
-    cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+    cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
     k apply -f cloud/k8/data-services/geode/gemfire.yml
 
     watch kubectl get pods

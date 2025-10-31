@@ -56,7 +56,7 @@ create region --name=AccountReplay --type=PARTITION
 Start Consumers Quorum
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 ```
 ```shell
 java -jar applications/stream-account-geode-sink/target/stream-account-geode-sink-0.0.1-SNAPSHOT.jar
@@ -77,7 +77,7 @@ query --query="select * from /Account"
 Start Publisher
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/stream-account-http-source/target/stream-account-http-source-0.0.1-SNAPSHOT.jar
 ```
 
@@ -96,7 +96,7 @@ query --query="select * from /Account"
 
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/stream-account-geode-sink/target/stream-account-geode-sink-0.0.1-SNAPSHOT.jar --gemfire.region.name=AccountStream --spring.profiles.active=stream --server.port=0  --spring.application.name=account-geode-sink-stream
 ```
 
@@ -132,7 +132,7 @@ query --query="select * from /AccountReplay"
 ```
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/stream-account-geode-sink/target/stream-account-geode-sink-0.0.1-SNAPSHOT.jar --gemfire.region.name=AccountReplay --spring.profiles.active=stream --server.port=0  --rabbitmq.streaming.replay=true --spring.application.name=account-geode-sink-replay
 ```
 

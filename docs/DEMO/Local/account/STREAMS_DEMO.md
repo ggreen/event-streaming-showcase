@@ -64,7 +64,7 @@ create region --name=Account --type=PARTITION
 - 500 MB Segments
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 wget https://github.com/rabbitmq/rabbitmq-java-tools-binaries-dev/releases/download/v-stream-perf-test-latest/stream-perf-test-latest.jar
 java -jar stream-perf-test-latest.jar
 ```
@@ -74,7 +74,7 @@ java -jar stream-perf-test-latest.jar
 Start GemFire/Geode Consumers 
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 ```
 ```shell
 java -jar applications/account-gemfire-rabbit-stream-sink/target/account-gemfire-rabbit-stream-sink-0.0.1-SNAPSHOT.jar
@@ -101,7 +101,7 @@ Click data browser
 Start Publisher
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/account-generator-streams-source/target/account-generator-streams-source-0.0.1-SNAPSHOT.jar
 ```
 
@@ -136,7 +136,7 @@ select * from /Account limit 10
 Start Consumers with REPLAY option
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 ```
 ```shell
 java -jar applications/account-gemfire-rabbit-stream-sink/target/account-gemfire-rabbit-stream-sink-0.0.1-SNAPSHOT.jar --rabbitmq.streaming.replay=true
@@ -163,7 +163,7 @@ select * from evt_locations;
 
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/account-jdbc-sink/target/account-jdbc-sink-0.0.1-SNAPSHOT.jar
 ```
 

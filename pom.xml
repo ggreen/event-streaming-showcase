@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.vmware</groupId>
-    <artifactId>tanzu-rabbitmq-event-streaming-showcase-parent</artifactId>
+    <artifactId>event-streaming-showcase-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>tanzu-rabbitmq-event-streaming-showcase-parent</name>
+    <name>event-streaming-showcase-parent</name>
 
     <modules>
         <module>components/stream-account-domain</module>

@@ -10,14 +10,14 @@ cd /Users/devtools/repositories/RDMS/PostgreSQL/kubernetes/VMware
 
 RabbitMQ
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/cloud/k8/data-services/rabbitmq/install_commericial
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/cloud/k8/data-services/rabbitmq/install_commericial
 ./rabbitmq-commericial.sh
 ````
 
 GemFire
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/cloud/k8/data-services/gemfire
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/cloud/k8/data-services/gemfire
 ./gf-k8-setup.sh
 ```
 -------------------------------------------------------
@@ -92,7 +92,7 @@ spec:
 
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 kubectl apply -f cloud/k8/data-services/postgres/postgres.yml
 ```
 
@@ -116,7 +116,7 @@ spec:
 
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 kubectl apply -f cloud/k8/apps/account-http-ampq-source/account-http-ampq-source.yml
 ```
 
@@ -199,7 +199,7 @@ kubectl  exec -it gemfire1-locator-0 -- gfsh -e "connect --locator=gemfire1-loca
 Deploy Application
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 kubectl apply -f cloud/k8/apps/account-gemfire-amqp-sink/account-gemfire-amqp-sink.yml
 ```
 
@@ -240,7 +240,7 @@ select * from /Account
 ## JDBC
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 kubectl apply -f cloud/k8/apps/account-jdbc-amqp-sink
 ```
 

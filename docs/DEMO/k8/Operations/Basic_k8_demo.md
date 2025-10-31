@@ -52,7 +52,7 @@ Create binding rules
 Deploy app
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 kubectl apply -f cloud/k8/apps/http-amqp-source/dealer/dealer-http-source.yml
 ```
 
@@ -78,7 +78,7 @@ Create queue **dealer1.workOrder.repair**
 - dealer1.topic -> queue: dealer1.workOrder.repair -> routingKey: workOrder.repair.#
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 kubectl apply -f cloud/k8/apps/http-amqp-source/dealer/messageTopology/dealer-message-topology.yml
 ```
 

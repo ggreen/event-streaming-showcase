@@ -107,10 +107,10 @@ export RMQ_rabbitmq__serviceaccount="$serviceaccount"
 ytt -f packageInstall.yml --data-values-env RMQ | kapp deploy --debug -a tanzu-rabbitmq  -y -n $namespace -f-
 
 
-kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
+kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
 #kubectl create secret docker-registry tanzu-rabbitmq-registry-creds --docker-username=$HARBOR_USER --docker-password=$HARBOR_PASSWORD
 
-$kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
+$kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
 
 
 sleep 5

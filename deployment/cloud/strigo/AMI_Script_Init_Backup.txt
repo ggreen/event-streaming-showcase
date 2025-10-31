@@ -4,7 +4,7 @@ set -x #echo on
 
 kind delete cluster
 
-cd ~/projects/rabbitmq/tanzu-rabbitmq-event-streaming-showcase/
+cd ~/projects/rabbitmq/event-streaming-showcase/
 git pull
 
 cd ~
@@ -35,7 +35,7 @@ sleep 40
 helm install gemfire-operator ~/gemfire-operator-1.0.1.tgz --namespace gemfire-system
 
 sleep 30s
-cd ~/projects/rabbitmq/tanzu-rabbitmq-event-streaming-showcase/
+cd ~/projects/rabbitmq/event-streaming-showcase/
 kubectl apply -f cloud/k8/data-services/geode/gemfire.yml
 
 
@@ -58,7 +58,7 @@ kubectl create secret docker-registry regsecret \
 helm install --wait postgres-operator /tmp/postgres-operator/
 sleep 30s
 
-cd ~/projects/rabbitmq/tanzu-rabbitmq-event-streaming-showcase/
+cd ~/projects/rabbitmq/event-streaming-showcase/
 kubectl apply -f cloud/k8/data-services/postgres
 sleep 1m
 kubectl exec -it postgres-0 -- psql -c "ALTER USER postgres PASSWORD 'CHANGEME'"
@@ -98,4 +98,4 @@ sleep 2m
 kubectl apply -f ./services/dev/monitoring-proxy
 
 # Create GemFire Cluster
-cd ~/projects/rabbitmq/tanzu-rabbitmq-event-streaming-showcase
+cd ~/projects/rabbitmq/event-streaming-showcase

@@ -1,9 +1,5 @@
 # LAB 01 - Rabbit setup w Pub/Sub Apps
 
-**Prerequisite**
-
-- Dotnet SDK 7.0.401 or higher 
-- Docker version 4.29 or higher
 
 Create the podman network (if not existing)
 ```shell
@@ -14,8 +10,8 @@ podman network create tanzu
 
 Example with git
 ```shell
-git clone https://github.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase.git
-cd tanzu-rabbitmq-event-streaming-showcase
+git clone https://github.com/ggreen/event-streaming-showcase.git
+cd event-streaming-showcase
 ```
 
 

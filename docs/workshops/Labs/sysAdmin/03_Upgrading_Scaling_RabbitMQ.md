@@ -44,7 +44,7 @@ Waited for PODS to be in Running status
 Create Rabbit Broker
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-1-node-3.12.13.yml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-1-node-3.12.13.yml
 ```
 
 View PODs
@@ -96,7 +96,7 @@ Review version
 
 Upgrade version
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-1-node-3.12.14.yml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-1-node-3.12.14.yml
 ```
 
 View PODs
@@ -122,7 +122,7 @@ Note: RabbitMQ Version
 
 Scale to 3 nodes
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-3-node-3.12.14.yml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-3-node-3.12.14.yml
 ```
 
 
@@ -155,7 +155,7 @@ open http://127.0.0.1:15672/
 Upgrade RabbitMQ cluster
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-3-node-3.13.yml
+kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/upgrade/rabbitmq-3-node-3.13.yml
 ```
 
 View PODs

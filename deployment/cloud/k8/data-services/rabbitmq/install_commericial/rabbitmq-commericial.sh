@@ -149,7 +149,7 @@ else
      echo "Directory cluster-operator exists, skipping..."
 fi
 
-kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
+kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
 #kubectl create secret docker-registry tanzu-rabbitmq-registry-creds --docker-username=$HARBOR_USER --docker-password=$HARBOR_PASSWORD
 
 
@@ -157,6 +157,6 @@ echo "INSTALLING CLUSTERS MONITOR..."
 $kubectl apply --filename https://raw.githubusercontent.com/rabbitmq/cluster-operator/main/observability/prometheus/monitors/rabbitmq-servicemonitor.yml
 echo "INSTALLING OPERATORS MONITOR..."
 $kubectl apply --filename https://raw.githubusercontent.com/rabbitmq/cluster-operator/main/observability/prometheus/monitors/rabbitmq-cluster-operator-podmonitor.yml
-$kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
+$kubectl apply -f /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/deployment/cloud/k8/data-services/rabbitmq/secret/secrets.yml
 
 $kubectl get pods -n rabbitmq-system

@@ -8,8 +8,8 @@
 
 Example with git
 ```shell
-git clone https://github.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase.git
-cd tanzu-rabbitmq-event-streaming-showcase
+git clone https://github.com/ggreen/event-streaming-showcase.git
+cd event-streaming-showcase
 ```
 
 

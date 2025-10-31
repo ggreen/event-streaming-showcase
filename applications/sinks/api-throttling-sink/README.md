@@ -32,7 +32,7 @@ Client Applications -> Register -> By Properties
 See api-throttle properties
 
 ```properties
-sink.api-throttle=http://github.com/Tanzu-Solutions-Engineering/tanzu-rabbitmq-event-streaming-showcase/releases/download/api-throttle-6-3-2024/api-throttling-sink-0.0.1-SNAPSHOT.jar
+sink.api-throttle=http://github.com/Tanzu-Solutions-Engineering/event-streaming-showcase/releases/download/api-throttle-6-3-2024/api-throttling-sink-0.0.1-SNAPSHOT.jar
 ```
 
 Create Stream

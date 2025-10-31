@@ -52,7 +52,7 @@ cd /Users/devtools/integration/scdf/
 
 
 ```shell
-cd Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase$
+cd Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase$
 kubectl apply -f cloud/k8/data-services/rabbitmq/rabbitmq-1-node.yml
 ```
 
@@ -108,7 +108,7 @@ Kill a process
 ## Cleanup processing running in AWS
 
 ````shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 k delete -f cloud/k8/data-services/rabbitmq/rabbitmq-1-node.yml
 ````
 
@@ -139,7 +139,7 @@ stream create --name csv-to-log --definition "file --filename-regex='.*.csv' --d
 Deploy Stream
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 cp docs/Local/plant/input/measurements.csv /tmp/scdf
 ```
 
@@ -209,7 +209,7 @@ curl http://localhost:9991 -H "Accept: application/json" --header "Content-Type:
 
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -Dconfig.properties=docs/Local/plant/input/generator-template.properties -jar applications/generator-mqtt-source/target/generator-mqtt-source-0.0.1-SNAPSHOT.jar  
 ```
 

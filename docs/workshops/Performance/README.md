@@ -66,7 +66,7 @@ Default - In-memory - classic queue and
  - 12 byte payloads
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/performance/rabbit-spring-perf-test/target/rabbit-spring-perf-test-0.0.1-SNAPSHOT.jar
 ```
 
@@ -80,21 +80,21 @@ java -jar applications/performance/rabbit-spring-perf-test/target/rabbit-spring-
 - Results will be prefixed with “test1” for easier identification and comparison:
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/performance/rabbit-spring-perf-test/target/rabbit-spring-perf-test-0.0.1-SNAPSHOT.jar -x 1 -y 2 -u "throughput-test-1" -a --id "test 1"
 ```
 
 ## Consumers to manual acknowledgements:
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/performance/rabbit-spring-perf-test/target/rabbit-spring-perf-test-0.0.1-SNAPSHOT.jar -x 1 -y 2 -u "throughput-test-3" --id "test 3"
 ```
 
 ## Durable queues and persistent messages:
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/performance/rabbit-spring-perf-test/target/rabbit-spring-perf-test-0.0.1-SNAPSHOT.jar  -x 1 -y 2 -u "throughput-test-5" --id "test-5" -f persistent
 ```
 
@@ -127,7 +127,7 @@ rabbitmqctl -n rabbit enable_feature_flag stream_queue
 Download performance test tool
 
 ```shell
-wget https://github.com/rabbitmq/rabbitmq-java-tools-binaries-dev/releases/download/v-stream-perf-test-latest/stream-perf-test-latest.jar  --directory-prefix=/Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/performance/lib
+wget https://github.com/rabbitmq/rabbitmq-java-tools-binaries-dev/releases/download/v-stream-perf-test-latest/stream-perf-test-latest.jar  --directory-prefix=/Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/performance/lib
 
 ```
 
@@ -142,6 +142,6 @@ Default
 - 500 MB Segments
 
 ```shell
-cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase
+cd /Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase
 java -jar applications/performance/lib/stream-perf-test-latest.jar
 ```

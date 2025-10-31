@@ -16,7 +16,7 @@
 ## step 1 - Change to project dir
 
 ```shell
-    cd ~/projects/rabbitmq/tanzu-rabbitmq-event-streaming-showcase/
+    cd ~/projects/rabbitmq/event-streaming-showcase/
 ```
 
 ## step 4 - starts app

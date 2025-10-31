@@ -2,7 +2,7 @@
 
 set -x #echo on
 
-cd ~/projects/rabbitmq/tanzu-rabbitmq-event-streaming-showcase/
+cd ~/projects/rabbitmq/event-streaming-showcase/
 
 
 # Set GemFire Pre-Requisite

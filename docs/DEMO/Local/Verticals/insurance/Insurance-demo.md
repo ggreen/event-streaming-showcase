@@ -96,8 +96,8 @@ cd /Users/devtools/integration/scdf/
 From properties
 
 ```properties
-sink.jdbc-upsert=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT.jar
-sink.jdbc-upsert.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT-metadata.jar
+sink.jdbc-upsert=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT.jar
+sink.jdbc-upsert.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT-metadata.jar
 sink.jdbc-upsert.bootVersion=3
 ```
 
@@ -106,8 +106,8 @@ sink.jdbc-upsert.bootVersion=3
 From properties
 
 ```properties
-processor.jdbc-sql-processor=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
-processor.jdbc-sql-processor.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT-metadata.jar
+processor.jdbc-sql-processor=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
+processor.jdbc-sql-processor.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/processors/jdbc-sql-processor/target/jdbc-sql-processor-0.0.1-SNAPSHOT-metadata.jar
 processor.jdbc-sql-processor.bootVersion=3
 ```
 

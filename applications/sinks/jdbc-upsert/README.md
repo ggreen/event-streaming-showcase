@@ -26,8 +26,8 @@ app register --name jdbc-upsert --type sink  --uri docker:cloudnativedata/jdbc-u
 From properties
 
 ```properties
-sink.jdbc-upsert=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT.jar
-sink.jdbc-upsert.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT-metadata.jar
+sink.jdbc-upsert=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT.jar
+sink.jdbc-upsert.metadata=file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/sinks/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT-metadata.jar
 sink.jdbc-upsert.bootVersion=3
 ```
 
@@ -146,7 +146,7 @@ stream create --name "jdbc-postgres" --definition "http | jdbc-upsert"
 Local only
 
 ```shell
-app register --type sink --name jdbc-upsert --uri file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/tanzu-rabbitmq-event-streaming-showcase/applications/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT.jar
+app register --type sink --name jdbc-upsert --uri file:///Users/Projects/VMware/Tanzu/TanzuData/TanzuRabbitMQ/dev/event-streaming-showcase/applications/jdbc-upsert/target/jdbc-upsert-0.2.0-SNAPSHOT.jar
 ```
 
 
