@@ -6,11 +6,12 @@ import com.rabbitmq.client.amqp.Management;
 import com.rabbitmq.client.amqp.impl.AmqpEnvironmentBuilder;
 import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.patterns.conversion.Converter;
-import nyla.solutions.core.patterns.integration.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 import showcase.streaming.event.account.domain.Account;
 
 @Configuration
@@ -46,7 +47,7 @@ public class RabbitAmqp1_0Config {
     private String contentType;
 
     @Bean
-    Publisher<Account> publisher(Converter<Account,byte[]> converter, Connection connection, Management.QueueInfo streamInfo)
+    MessageChannel publisher(Converter<Account,byte[]> converter, Connection connection, Management.QueueInfo streamInfo)
     {
         var publisher =
                 connection
@@ -54,7 +55,8 @@ public class RabbitAmqp1_0Config {
                         .queue(streamInfo.name())
                         .build();
 
-        Publisher<Account> sender = account -> {
+        return (Message<?> message, long timeout) -> {
+            var account = (Account) message.getPayload();
             var msg = publisher
                     .message(converter.convert(account))
                     .contentType(contentType)
@@ -63,9 +65,8 @@ public class RabbitAmqp1_0Config {
             publisher.publish(msg, context -> {});
 
             log.info("published accountType:{}", account.getAccountType());
+            return true;
         };
-
-        return  sender;
     }
 
     @Bean

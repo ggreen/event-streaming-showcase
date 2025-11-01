@@ -3,14 +3,14 @@ package showcase.event.stream.rabbitmq.account.http.source;
 import com.rabbitmq.stream.Environment;
 import com.rabbitmq.stream.Producer;
 import lombok.extern.slf4j.Slf4j;
-import nyla.solutions.core.patterns.conversion.Converter;
-import nyla.solutions.core.patterns.integration.Publisher;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.rabbit.stream.producer.RabbitStreamTemplate;
 import showcase.streaming.event.account.domain.Account;
 
@@ -56,10 +56,11 @@ public class RabbitStreamConfig {
     }
 
     @Bean
-    Publisher<Account> publisher(Producer producer, Converter<Account,byte[]> converter)
+    MessageChannel publisher(Producer producer, Converter<Account,byte[]> converter)
     {
-        return account ->{
+        return (msg, timeout) ->{
 
+            var account = (Account)msg.getPayload();
             var state = account.getLocation() != null ? account.getLocation().getStateProvince() : "";
 
             producer.send(producer.messageBuilder()
@@ -69,6 +70,7 @@ public class RabbitStreamConfig {
                     .applicationProperties().entry(FILTER_PROP_NM,state)
                     .messageBuilder()
                     .build(), confirmationStatus ->{});
+            return true;
         };
     }
 

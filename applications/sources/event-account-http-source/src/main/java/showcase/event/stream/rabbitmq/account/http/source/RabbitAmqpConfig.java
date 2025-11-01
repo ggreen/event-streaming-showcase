@@ -1,18 +1,17 @@
 package showcase.event.stream.rabbitmq.account.http.source;
 
 import lombok.extern.slf4j.Slf4j;
-import nyla.solutions.core.patterns.conversion.Converter;
-import nyla.solutions.core.patterns.integration.Publisher;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.messaging.MessageChannel;
 import showcase.streaming.event.account.domain.Account;
 
 @Configuration
@@ -25,9 +24,6 @@ public class RabbitAmqpConfig {
 
     @Value("${spring.application.name}")
     private String applicationName;
-
-    @Value("${spring.rabbitmq.routing.key:}")
-    private String routingKey;
 
     @Bean
     ConnectionNameStrategy connectionNameStrategy() {
@@ -42,16 +38,18 @@ public class RabbitAmqpConfig {
     }
 
     @Bean
-    Publisher<Account> publisher(AmqpTemplate amqpTemplate)
+    MessageChannel publisher(AmqpTemplate amqpTemplate)
     {
-        return account ->{
+        return (msg, timeout) ->{
+            var account = (Account)msg.getPayload();
             amqpTemplate.convertAndSend(topicExchange,account.getId(),account);
+            return true;
         };
     }
 
     @Bean
     MessageConverter convert(){
-        return new Jackson2JsonMessageConverter();
+        return new JacksonJsonMessageConverter();
     }
 
 }

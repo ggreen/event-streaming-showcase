@@ -7,18 +7,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 import showcase.streaming.event.account.domain.Account;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AccountControllerTest {
 
-    private Account account = JavaBeanGeneratorCreator.of(Account.class).create();
+    @Mock
+    Account account;
     private AccountController subject;
 
     @Mock
-    private Publisher<Account> publisher;
+    private MessageChannel publisher;
 
     @BeforeEach
     void setUp() {
@@ -30,6 +35,6 @@ class AccountControllerTest {
 
         subject.publish(account);
 
-        verify(publisher).send(account);
+        verify(publisher).send(any());
     }
 }

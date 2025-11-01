@@ -10,12 +10,12 @@ package showcase.event.stream.rabbitmq.account.http.source;
 import com.rabbitmq.stream.Environment;
 import com.rabbitmq.stream.Producer;
 import lombok.extern.slf4j.Slf4j;
-import nyla.solutions.core.patterns.conversion.Converter;
-import nyla.solutions.core.patterns.integration.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.rabbit.stream.config.SuperStream;
 import showcase.streaming.event.account.domain.Account;
 
@@ -52,9 +52,10 @@ public class RabbitSuperStreamConfig {
     }
 
     @Bean
-    Publisher<Account> publisher(Environment environment, Producer producer, Converter<Account, byte[]> converter) {
-        return account -> {
-            try {
+    MessageChannel publisher(Environment environment, Producer producer, Converter<Account, byte[]> converter) {
+        return (msg, timeout) -> {
+                var account = (Account)msg.getPayload();
+
                 producer.send(producer.messageBuilder().applicationProperties()
                                 .entry(routingKeyName, account.getId())
                                 .messageBuilder().addData
@@ -65,9 +66,7 @@ public class RabbitSuperStreamConfig {
                             else
                                 log.error("NOT! SENT: {}", account);
                         });
-            } catch (Exception e) {
-                log.error("ERROR: {}", e);
-            }
+            return true;
         };
     }
 
