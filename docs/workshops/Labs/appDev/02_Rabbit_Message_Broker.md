@@ -2,8 +2,6 @@
 
 **Prerequisite**
 
-- Dotnet SDK 7.0.401 or higher 
-- Docker version 4.29 or higher
 - Download Source Code
 
 Example with git
@@ -32,7 +30,7 @@ docker logs rabbitmq01
 ```
 
 
-- Open Management Console with credentials *user/bitnami*
+- Open Management Console with credentials *guest/guest*
 ```shell
 open http://localhost:15672
 ```
@@ -64,7 +62,7 @@ Send another message (round-robin)
  dotnet run  --project  applications/dotnet/Send/ --routingKey=app.receive --message="Testing app.receive 2"
 ```
 
-## Review  Management Console (user/bitnami)
+## Review  Management Console (guest/guest)
 
 ```shell
 open http://localhost:15672

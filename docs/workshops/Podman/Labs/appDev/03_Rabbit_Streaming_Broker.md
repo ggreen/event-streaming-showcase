@@ -29,7 +29,7 @@ podman run --name rabbitmq01  --network tanzu --rm -e RABBITMQ_MANAGEMENT_ALLOW_
 - View Logs (wait for message: started TCP listener on [::]:5672)
 
 
-- Open Management Console with credentials *user/bitnami*
+- Open Management Console with credentials *guest/guest*
 ```shell
 open http://localhost:15672
 ```
@@ -59,7 +59,7 @@ Send another message
 java -jar applications/rabbit-publisher/target/rabbit-publisher-0.0.1-SNAPSHOT.jar  --routingKey=app.receive.stream --message="Testing app.receive STREAMING DATA 2"
 ```
 
-## Review  Management Console (user/bitnami)
+## Review  Management Console (guest/guest)
 
 ```shell
 open http://localhost:15672

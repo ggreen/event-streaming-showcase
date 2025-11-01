@@ -32,7 +32,7 @@ docker run --name rabbitmq01  --network tanzu --rm -d -e RABBITMQ_MANAGEMENT_ALL
 docker logs rabbitmq01
 ```
 
-- Open Management Console with credentials *user/bitnami*
+- Open Management Console with credentials *guest/guest*
 ```shell
 open http://localhost:15672
 ```
@@ -61,7 +61,7 @@ Send another message
  dotnet run  --project  applications/dotnet/Send/ --routingKey=app.receive.stream --message="Testing app.receive STREAMING DATA 2"
 ```
 
-## Review  Management Console (user/bitnami)
+## Review  Management Console (guest/guest)
 
 ```shell
 open http://localhost:15672

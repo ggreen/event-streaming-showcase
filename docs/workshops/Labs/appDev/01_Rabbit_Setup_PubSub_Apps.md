@@ -34,7 +34,7 @@ docker logs rabbitmq01 -f
 ```
 
 
-- Open Management Console with credentials *user/bitnami*
+- Open Management Console with credentials *guest/guest*
 ```shell
 open http://localhost:15672
 ```

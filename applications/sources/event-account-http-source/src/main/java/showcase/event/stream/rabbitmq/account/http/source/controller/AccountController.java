@@ -2,7 +2,6 @@ package showcase.event.stream.rabbitmq.account.http.source.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nyla.solutions.core.patterns.conversion.Converter;
 import nyla.solutions.core.patterns.integration.Publisher;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +15,6 @@ import showcase.streaming.event.account.domain.Account;
 @Slf4j
 public class AccountController {
     private final Publisher<Account> publisher;
-    private Converter<Account,byte[]> converter;
 
     @PostMapping
     public void publish(@RequestBody Account account) {

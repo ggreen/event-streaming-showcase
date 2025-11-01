@@ -2,8 +2,6 @@
 
 **Prerequisite**
 
-- Dotnet SDK 7.0.401 or higher 
-- Docker version 4.29 or higher
 - Download Source Code
 
 Example with git
@@ -13,26 +11,22 @@ cd event-streaming-showcase
 ```
 
 
-Create the docker network (if not existing)
+Create the podman network (if not existing)
 ```shell
-docker network create tanzu
+podman network create tanzu
 ```
 
 - Run RabbitMQ (if not running)
 
 ```shell
-docker run --name rabbitmq01  --network tanzu --rm -d -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  rabbitmq:4.2-management 
+podman run --name rabbitmq01  --network tanzu --rm -it -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  rabbitmq:4.2-management 
 ```
-
 
 - View Logs (wait for message: started TCP listener on [::]:5672)
 
-```shell
-docker logs rabbitmq01
-```
 
 
-- Open Management Console with credentials *user/bitnami*
+- Open Management Console with credentials *guest/guest*
 ```shell
 open http://localhost:15672
 ```
@@ -41,11 +35,12 @@ open http://localhost:15672
 
 ## Start Consumer
 ```shell
-podman run --name event-log-sink-1 --rm --network tanzu  cloudnativedata/event-log-sink:0.0.2-SNAPSHOT --spring.cloud.stream.bindings.input.destination=showcase.event.streaming.accounts  spring.cloud.stream.bindings.input.group=event-log-sink --spring.rabbitmq.host=rabbitmq01 --spring.rabbitmq.username=user --spring.rabbitmq.password=bitnami --spring.profiles.active=ampq
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account
 ```
 Start Another Consumer
+
 ```shell
-podman run --name event-log-sink-2 --rm --network tanzu  cloudnativedata/event-log-sink:0.0.2-SNAPSHOT --spring.cloud.stream.bindings.input.destination=showcase.event.streaming.accounts  spring.cloud.stream.bindings.input.group=event-log-sink --spring.rabbitmq.host=rabbitmq01 --spring.rabbitmq.username=user --spring.rabbitmq.password=bitnami --spring.profiles.active=ampq
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink2  --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account
 ```
 
 ## Start Publisher
@@ -53,10 +48,10 @@ podman run --name event-log-sink-2 --rm --network tanzu  cloudnativedata/event-l
 Publish
 
 ```shell
-podman run --name event-account-http-source --network tanzu  -p 8095:8095  --rm cloudnativedata/event-account-http-source:0.0.2-SNAPSHOT --spring.profiles.active=amqp --spring.rabbitmq.host=rabbitmq01 --spring.rabbitmq.username=user --spring.rabbitmq.password=bitnami --server.port=8095  
+java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.profiles.active=amqp --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account
 ```
 
-Send another messages (round-robin)
+Send messages (round-robin)
 
 ```shell
 curl -X 'POST' \
@@ -64,24 +59,47 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "id": "string",
-  "name": "string",
-  "accountType": "string",
-  "status": "string",
-  "notes": "string",
+  "id": "01",
+  "name": "Account 1",
+  "accountType": "business",
+  "status": "OPEN",
+  "notes": "Notes for account",
   "location": {
-    "id": "string",
-    "address": "string",
-    "cityTown": "string",
-    "stateProvince": "string",
-    "zipPostalCode": "string",
-    "countryCode": "string"
+    "id": "acc-01-loc-01",
+    "address": "123 ",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
   }
 }'
 ```
 
 
-## Review  Management Console (user/bitnami)
+```shell
+curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "01",
+  "name": "Account 2",
+  "accountType": "business",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "acc-02-loc-02",
+    "address": "123 Straight Street",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
+```
+
+
+## Review  Management Console (guest/guest)
 
 ```shell
 open http://localhost:15672

@@ -42,10 +42,10 @@ public class RabbitAmqpConfig {
     }
 
     @Bean
-    Publisher<Account> publisher(AmqpTemplate amqpTemplate, Converter<Account, byte[]> converter)
+    Publisher<Account> publisher(AmqpTemplate amqpTemplate)
     {
         return account ->{
-            amqpTemplate.convertAndSend(topicExchange,routingKey,account);
+            amqpTemplate.convertAndSend(topicExchange,account.getId(),account);
         };
     }
 

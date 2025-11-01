@@ -38,7 +38,7 @@ Example see message - "started TCP listener on [::]:5672"
 podman logs clustering-queue-disc1-1
 ```
 
-- Open Management Console with user/bitnami
+- Open Management Console with guest/guest
 ```shell
 open http://localhost:15672
 ```
