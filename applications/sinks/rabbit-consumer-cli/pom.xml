@@ -9,49 +9,37 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.vmware</groupId>
-	<artifactId>rabbit-publisher</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>rabbit-publisher</name>
-	<description>rabbit-publisher</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<artifactId>rabbit-consumer-cli</artifactId>
+	<version>1.0.0</version>
+	<name>rabbit-consumer-cli</name>
+	<description>rabbit-consumer-cli</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
 		<dependency>
 			<groupId>com.rabbitmq</groupId>
 			<artifactId>amqp-client</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.github.nyla-solutions</groupId>
-            <artifactId>nyla.solutions.core</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.github.nyla-solutions</groupId>
+			<artifactId>nyla.solutions.core</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

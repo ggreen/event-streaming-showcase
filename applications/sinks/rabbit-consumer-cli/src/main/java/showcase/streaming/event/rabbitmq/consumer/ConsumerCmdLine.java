@@ -2,28 +2,52 @@ package showcase.streaming.event.rabbitmq.consumer;
 
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-import nyla.solutions.core.util.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class ConsumerCmdLine implements CommandLineRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConsumerCmdLine.class);
+
+    @Value("${clientName:Receive}")
+    private String clientName;
+
+    @Value("${queue:hello-quorum}")
+    private String queueName;
+
+    @Value("${exchange:}")
+    private String exchangeName;
+
+    @Value("${queueType:quorum}")
+    private String queueType;
+
+    @Value("${routingKey:}")
+    private String routingKeyValue;
+
+    @Value("${prefetchSize:0}")
+    private int prefetchSize;
+
+    @Value("${prefetchCount:1}")
+    private int prefetchCount;
+
+    @Value("${autoAck:true}")
+    private boolean autoAckFlag;
+
+    @Value("${streamOffset:last}")
+    private String streamOffset;
+
     @Override
     public void run(String... args) throws Exception {
         //Get Settings
-        var config = Config.loadArgs(args);
-        var clientName = config.getProperty("clientName","Receive");
-        var queueName =  config.getProperty("queue","hello-quorum");
-        var exchangeName = config.getProperty("exchange","");
-        var queueType = config.getProperty("queueType","quorum");
-        var routingKeyValue = config.getProperty("routingKey","");
-        int prefetchSize  = config.getPropertyInteger("prefetchSize",0);
-        int prefetchCount  = config.getPropertyInteger("prefetchCount",1);
-        boolean autoAckFlag = config.getPropertyBoolean("autoAck",true);
-        var streamOffset = config.getProperty("streamOffset","last");
+
         var consumerArguments =  new HashMap<String, Object>();
 
         if("stream".equals(queueType))
@@ -34,7 +58,7 @@ public class ConsumerCmdLine implements CommandLineRunner {
 
         //Make connection
         var factory = new ConnectionFactory();
-        factory.setUri("amqp://user:bitnami@localhost");
+//        factory.setUri("amqp://");
         factory.setClientProperties(Map.of("name",clientName));
 
         try(var connection = factory.newConnection(clientName)) {
@@ -50,17 +74,15 @@ public class ConsumerCmdLine implements CommandLineRunner {
                 channel.basicQos(prefetchSize, prefetchCount, false);
 
                 //Default Exchange Binding rules
-                if (exchangeName.length() > 0)
+                if (!exchangeName.isEmpty())
                     channel.queueBind(queueName,
                             exchangeName,
                             routingKeyValue);
 
 
                 System.out.println(" [*] Waiting for messages.");
-
-
                 DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                    String message = new String(delivery.getBody(), "UTF-8");
+                    String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
                     System.out.println(" [x] Received '" + message + "'");
 
                     if(!autoAckFlag)
