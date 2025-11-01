@@ -14,12 +14,12 @@ docker network create tanzu
 
 - Run RabbitMQ Upstream
 ```shell
-docker run --name rabbitmqUP  --network tanzu --rm -d -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 3672:3672  -p 35672:15672  bitnami/rabbitmq:3.13.1 
+docker run --name rabbitmqUP  --network tanzu --rm -d -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 3672:3672  -p 35672:15672  rabbitmq:4.2-management 
 ```
 
 - Run RabbitMQ Downstream 1
 ```shell
-docker run --name rabbitmqDOWN1  --network tanzu --rm -d -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 4672:3672  -p 45672:15672  bitnami/rabbitmq:3.13.1 
+docker run --name rabbitmqDOWN1  --network tanzu --rm -d -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 4672:3672  -p 45672:15672  rabbitmq:4.2-management 
 ```
 
 Check Upstream

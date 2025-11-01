@@ -20,11 +20,11 @@ cd event-streaming-showcase
 
 - Run RabbitMQ
 ```shell
-podman run --name rabbitmq01  --network tanzu --rm -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  bitnami/rabbitmq:3.13.1 
+podman run --name rabbitmq01  --network tanzu --rm -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  rabbitmq:4.2-management 
 ```
 
 
-- Open Management Console with credentials *user/bitnami*
+- Open Management Console with credentials *guest/guest*
 
 ```shell
 open http://localhost:15672
@@ -32,7 +32,7 @@ open http://localhost:15672
 # 2 - Run Consumer
 
 ```shell
-podman run --name event-log-sink --rm --network tanzu  cloudnativedata/event-log-sink:0.0.2-SNAPSHOT --spring.cloud.stream.bindings.input.destination=showcase.event.streaming.accounts  spring.cloud.stream.bindings.input.group=event-log-sink --spring.rabbitmq.host=rabbitmq01 --spring.rabbitmq.username=user --spring.rabbitmq.password=bitnami --spring.profiles.active=ampq
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account  
 ```
 
 Review  Management Console
@@ -46,9 +46,39 @@ Review  Management Console
 
 In new terminal
 ```shell
- podman run --name event-account-http-source --network tanzu  -p 8095:8095  --rm cloudnativedata/event-account-http-source:0.0.2-SNAPSHOT --spring.profiles.active=amqp --spring.rabbitmq.host=rabbitmq01 --spring.rabbitmq.username=user --spring.rabbitmq.password=bitnami --server.port=8095  
+ java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.profiles.active=amqp --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account 
 ```
 
+Open Swagger UI
+
+```shell
+open http://localhost:8095/swagger-ui/index.html
+```
+
+
+Post JSON using Swagger
+
+```json
+{
+  "id": "01",
+  "name": "Account 1",
+  "accountType": "business",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "acc-01-loc-01",
+    "address": "123 ",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}
+```
+
+
+
+or Use Curl
 
 ```shell
 curl -X 'POST' \
@@ -56,24 +86,23 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "id": "string",
-  "name": "string",
-  "accountType": "string",
-  "status": "string",
-  "notes": "string",
+  "id": "01",
+  "name": "Account 1",
+  "accountType": "business",
+  "status": "OPEN",
+  "notes": "Notes for account",
   "location": {
-    "id": "string",
-    "address": "string",
-    "cityTown": "string",
-    "stateProvince": "string",
-    "zipPostalCode": "string",
-    "countryCode": "string"
+    "id": "acc-01-loc-01",
+    "address": "123 ",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
   }
 }'
 ```
 
 Check if Receive app consumed message 
-
 
 Review  Management Console 
 

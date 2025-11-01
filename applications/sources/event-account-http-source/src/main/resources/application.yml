@@ -3,8 +3,8 @@ server:
 spring:
   application:
     name: event-account-http-source
-  cloud:
-    stream:
-      bindings:
-        output:
-          destination: "showcase.event.streaming.accounts"
+#  cloud:
+#    stream:
+#      bindings:
+#        output:
+#          destination: "showcase.event.streaming.accounts"
