@@ -23,7 +23,7 @@ cd event-streaming-showcase
 - Run RabbitMQ (if not running)
 
 ```shell
-podman run --name rabbitmq01  --network tanzu --rm -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -e RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS='-rabbitmq_stream advertised_host localhost' -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  rabbitmq:4.2-management 
+deployment/local/containers/rabbit.sh
 ```
 
 - View Logs (wait for message: started TCP listener on [::]:5672)
@@ -114,80 +114,25 @@ podman rm -f rabbitmq01
 ```
 
 ---------------------------
-# 3 - Spring Filter Single Active Consumer (Kubernetes)
+# 3 - Spring Filter Single Active Consumer
 
-
-Start Kind
-
-
-
-Install RabbitMQ Cluster Operator (if pods not running)
-
-```shell
-kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
-```
-
-View PODS in rabbitmq-system
-
-```shell
-kubectl get pods -n rabbitmq-system
-```
-
-Waited for PODS to be in Running status
-
-
-
-Create 1 Node RabbitMQ 
-
-```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/rabbitmq-1-node.yml
-```
-
-View PODs
-
-```shell
-kubectl get pods
-```
-
-Wait for server to be in running state
-
-```shell
-kubectl wait pod -l=app.kubernetes.io/name=rabbitmq --for=condition=Ready --timeout=160s
-```
 
 Deploy Event Log Application
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-log-sink/event-log-sink.yml
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1  --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.profiles.active=superStream --spring.cloud.stream.bindings.input.destination=accounts.account.superstream --rabbitmq.streaming.offset=last --rabbitmq.streaming.partitions=2 --spring.cloud.stream.rabbit.bindings.input.consumer.singleActiveConsumer=true
 ```
 
 Deploy Http Source App
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-account-http-source/event-account-http-source.yml
-```
-
-Check if all pods in running state
-
-```shell
-kubectl get pods
-```
-
-Example output
+java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --server.port=8080 --spring.cloud.stream.bindings.output.destination=accounts.account.superstream --spring.profiles.active=superStream
 
 ```
-NAME                                         READY   STATUS    RESTARTS   AGE
-event-account-http-source-694b87f746-5x9sb   1/1     Running   0          18m
-event-log-sink-cd7fbc47b-djt2v               1/1     Running   0          2m53s
-event-log-sink-cd7fbc47b-qls7g               1/1     Running   0          127m
-rabbitmq-server-0                            1/1     Running   0          130m
-```
 
-Open Sources in brows
 
 Submit account
 ```shell
-kubectl port-forward service/event-account-http-source 8080:8080
 open http://localhost:8080/swagger-ui/index.html
 ```
 

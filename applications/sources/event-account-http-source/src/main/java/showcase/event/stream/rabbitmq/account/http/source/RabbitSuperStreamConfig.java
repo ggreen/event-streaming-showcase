@@ -8,18 +8,18 @@
 package showcase.event.stream.rabbitmq.account.http.source;
 
 import com.rabbitmq.stream.Environment;
-import com.rabbitmq.stream.Producer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.converter.Converter;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.rabbit.stream.config.SuperStream;
-import showcase.streaming.event.account.domain.Account;
+import org.springframework.rabbit.stream.producer.RabbitStreamTemplate;
 
-import static java.lang.String.valueOf;
+import java.util.Objects;
 
 @Configuration
 @Slf4j
@@ -39,6 +39,7 @@ public class RabbitSuperStreamConfig {
     private static final String routingKeyName = "id";
 
 
+    @Bean
     SuperStream superStream(Environment environment) {
 
         log.info("Creating super stream: {}", superStreamName);
@@ -52,36 +53,24 @@ public class RabbitSuperStreamConfig {
     }
 
     @Bean
-    MessageChannel publisher(Environment environment, Producer producer, Converter<Account, byte[]> converter) {
-        return (msg, timeout) -> {
-                var account = (Account)msg.getPayload();
+    RabbitStreamTemplate streamTemplate(Environment env, MessageConverter converter) {
+        RabbitStreamTemplate template = new RabbitStreamTemplate(env, superStreamName);
+        template.setMessageConverter(converter);
+        template.setSuperStreamRouting(message -> {
+            var routingKey = ((Message<?>)message.getBody()).getHeaders().get("ROUTING_KEY", String.class);
 
-                producer.send(producer.messageBuilder().applicationProperties()
-                                .entry(routingKeyName, account.getId())
-                                .messageBuilder().addData
-                                        (converter.convert(account)).build(),
-                        confirmationStatus -> {
-                            if (confirmationStatus.isConfirmed())
-                                log.info("SENT: {}", account);
-                            else
-                                log.error("NOT! SENT: {}", account);
-                        });
-            return true;
-        };
+            log.info("ROUTING KEY: {}",routingKey);
+            return Objects.requireNonNull(routingKey);
+        });
+        return template;
     }
 
     @Bean
-    Producer producer(Environment environment) {
-        superStream(environment);
-
-        return environment.producerBuilder()
-                .superStream(superStreamName)
-                .routing(msg -> {
-                    var id = valueOf(msg.getApplicationProperties().get(routingKeyName));
-                    log.info("routing id: {}",id);
-                    return id;
-                })
-                .producerBuilder()
-                .build();
+    MessageChannel publisher(Environment environment, RabbitStreamTemplate streamTemplate) {
+        return (msg, timeout) -> {
+            streamTemplate.convertAndSend(msg);
+            log.info("SENT to stream: {}: msg: {}",streamTemplate.getStreamName(),msg);
+            return true;
+        };
     }
 }

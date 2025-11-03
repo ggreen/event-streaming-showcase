@@ -36,5 +36,6 @@ class AccountControllerTest {
         subject.publish(account);
 
         verify(publisher).send(any());
+
     }
 }

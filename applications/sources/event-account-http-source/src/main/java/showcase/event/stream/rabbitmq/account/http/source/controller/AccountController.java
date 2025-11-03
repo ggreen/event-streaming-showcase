@@ -1,9 +1,11 @@
 package showcase.event.stream.rabbitmq.account.http.source.controller;
 
+import com.rabbitmq.stream.Producer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.patterns.integration.Publisher;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,8 @@ public class AccountController {
     @PostMapping
     public void publish(@RequestBody Account account) {
         log.info("Publishing Account: {}",account);
-        publisher.send(MessageBuilder.withPayload(account).build());
+        publisher.send(MessageBuilder.withPayload(account)
+                .setHeader("ROUTING_KEY",account.getId())
+                .build());
     }
 }
