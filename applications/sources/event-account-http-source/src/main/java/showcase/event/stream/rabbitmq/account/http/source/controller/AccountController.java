@@ -4,6 +4,7 @@ import com.rabbitmq.stream.Producer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.patterns.integration.Publisher;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -25,6 +26,7 @@ public class AccountController {
         log.info("Publishing Account: {}",account);
         publisher.send(MessageBuilder.withPayload(account)
                 .setHeader("ROUTING_KEY",account.getId())
+                        .setHeader(MessageHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build());
     }
 }
