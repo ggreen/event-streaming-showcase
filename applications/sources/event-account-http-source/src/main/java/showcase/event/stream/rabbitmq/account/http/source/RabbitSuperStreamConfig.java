@@ -7,22 +7,22 @@
 
 package showcase.event.stream.rabbitmq.account.http.source;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.stream.Environment;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.qpid.proton.amqp.messaging.Data;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.rabbit.stream.config.SuperStream;
 import org.springframework.rabbit.stream.producer.RabbitStreamTemplate;
 import showcase.streaming.event.account.domain.Account;
 
 import java.util.concurrent.ExecutionException;
+
+import static showcase.event.stream.rabbitmq.account.http.source.properties.AccountSourceConstants.ROUTING_KEY;
 
 @Configuration
 @Slf4j
@@ -56,37 +56,35 @@ public class RabbitSuperStreamConfig {
     }
 
     @Bean
-    RabbitStreamTemplate streamTemplate(Environment env, MessageConverter converter, ObjectMapper objectMapper) {
+    MessageChannel publisher(RabbitStreamTemplate streamTemplate, Converter<Account,byte[]> converter) {
+        return (msg, timeout) -> {
+            try {
+                var routingKey = msg.getHeaders().get(ROUTING_KEY,String.class);
+                var streamMsg = streamTemplate.messageBuilder()
+                        .addData(converter.convert((Account) msg.getPayload()))
+                        .applicationProperties().entry(ROUTING_KEY, routingKey)
+                        .messageBuilder()
+                        .build();
+
+                var reply = streamTemplate.send(streamMsg).get();
+                log.info("SENT: {} to stream: {}: msg with key: {}",reply,streamTemplate.getStreamName(),routingKey);
+                return reply;
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
+
+    @Bean
+    RabbitStreamTemplate streamTemplate(Environment env, MessageConverter converter) {
         var template = new RabbitStreamTemplate(env, superStreamName);
         template.setMessageConverter(converter);
 
         template.setSuperStreamRouting(message -> {
-            Data data = (Data) message.getBody();
-            var json = data.getValue().toString();
-            try {
-                var account = objectMapper.readValue(json,Account.class);
-
-                return account.getId();
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            return message.getApplicationProperties().get(ROUTING_KEY).toString();
         });
         return template;
     }
 
-    @Bean
-    MessageChannel publisher(Environment environment, RabbitStreamTemplate streamTemplate) {
-        return (msg, timeout) -> {
-            var reply = streamTemplate.convertAndSend(msg.getPayload());
 
-            try {
-                log.info("SENT: {} to stream: {}: msg: {}",reply.get(),streamTemplate.getStreamName(),msg);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-            return true;
-        };
-    }
 }

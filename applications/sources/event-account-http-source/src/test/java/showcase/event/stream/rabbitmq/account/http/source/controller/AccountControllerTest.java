@@ -16,7 +16,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class AccountControllerTest {
+class
+AccountControllerTest {
 
     @Mock
     Account account;
