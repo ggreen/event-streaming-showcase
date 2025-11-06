@@ -51,8 +51,6 @@ Publish
 java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar  --routingKey=app.receive.stream --message="Testing app.receive STREAMING DATA 1"
 ```
 
-- Hit Enter/Return to stop Publisher
-
 Send another message
 
 ```shell
@@ -72,10 +70,10 @@ Review  Management Console
 - Click Queues and Streams
 
 
-Stop Publisher and Consumer
+Stop Consumer
 
 ---------------------------
-# 2 - Stream Offsets .NET AMQP Client
+# 2 - Stream Offsets
 
 
 ## Start Consumer
@@ -85,14 +83,16 @@ Replay all messages
 java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=ReceiveStream1 --queue=app.receive.stream --queueType=stream --streamOffset=first --autoAck=false 
 ```
 
-Hit Enter
+Hit Enter/Control C
 
 Reading last chunk
 ```shell
 java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=ReceiveStream1 --queue=app.receive.stream --queueType=stream --streamOffset=last --autoAck=false
 ```
+Hit Enter/Control C
 
 Reading next message
+
 ```shell
 java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=ReceiveStream1 --queue=app.receive.stream --autoAck=false --queueType=stream --streamOffset=next 
 ```
@@ -104,14 +104,12 @@ java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-
 ```
 
 
-Stop Customer and Publisher
+Stop Customer
 
+# Shutdown/Cleanup
 
-Stop RabbitMQ
+Stop applications
 
-```shell
-podman rm -f rabbitmq01
-```
 
 ---------------------------
 # 3 - Spring Filter Single Active Consumer
@@ -119,15 +117,23 @@ podman rm -f rabbitmq01
 
 Deploy Event Log Application
 
+Consumer 1
+
 ```shell
-java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1  --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.profiles.active=superStream --spring.cloud.stream.bindings.input.destination=accounts.account.superstream --rabbitmq.streaming.offset=last --rabbitmq.streaming.partitions=2 --spring.cloud.stream.rabbit.bindings.input.consumer.singleActiveConsumer=true
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink  --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.profiles.active=superStream --spring.cloud.stream.bindings.input.destination=accounts.account.superstream --rabbitmq.streaming.offset=last --rabbitmq.streaming.partitions=2 --spring.cloud.stream.rabbit.bindings.input.consumer.singleActiveConsumer=true
+```
+
+
+Consumer 2
+
+```shell
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink  --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.profiles.active=superStream --spring.cloud.stream.bindings.input.destination=accounts.account.superstream --rabbitmq.streaming.offset=last --rabbitmq.streaming.partitions=2 --spring.cloud.stream.rabbit.bindings.input.consumer.singleActiveConsumer=true
 ```
 
 Deploy Http Source App
 
 ```shell
 java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --server.port=8080 --spring.cloud.stream.bindings.output.destination=accounts.account.superstream --spring.profiles.active=superStream
-
 ```
 
 
@@ -181,15 +187,6 @@ curl -X 'POST' \
 
 Review Logs for each
 
-Example pod 1 -  REPLACE event-log-sink-cd7fbc47b-djt2v ACTUAL POD NAME
-```shell
-kubectl logs -f -lname=event-log-sink-cd7fbc47b-djt2v
-```
-
-Example pod 2 (run in new terminal) - REPLACE event-log-sink-cd7fbc47b-qls7g ACTUAL POD NAME
-```shell
-kubectl logs -f event-log-sink-cd7fbc47b-qls7g
-```
 
 Note message are routed by account id application get the logs events
 
@@ -243,11 +240,35 @@ curl -X 'POST' \
 }'
 ```
 
-Delete Apps
+
+
+Example CLI
+
 ```shell
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-log-sink/event-log-sink.yml
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-account-http-source/event-account-http-source.yml
+curl -X 'POST' \
+  'http://localhost:8080/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "003",
+  "name": "Event Demo 3",
+  "accountType": "test",
+  "status": "IN-PROGRESS",
+  "notes": "Testing 3",
+  "location": {
+    "id": "002.002",
+    "address": "2 Straight Street",
+    "cityTown": "JamesTown",
+    "stateProvince": "NY",
+    "zipPostalCode": "45555",
+    "countryCode": "US"
+  }
+}'
 ```
+
+Stop Applications
+
+
 
 
 ---------------------------

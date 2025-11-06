@@ -1,9 +1,15 @@
 package showcase.event.stream.rabbitmq.log.sink;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.support.MessageBuilder;
 
 @Configuration
 @Slf4j
@@ -28,6 +34,27 @@ public class RabbitSuperStreamConfig {
 
     @Value("${spring.cloud.stream.rabbit.bindings.input.consumer.singleActiveConsumer:false}")
     private boolean singleActiveConsumer;
+
+
+    @Bean
+    MessageConverter mc(ObjectMapper mapper)
+    {
+        return new MessageConverter() {
+            @Override
+            public Object fromMessage(Message<?> message, Class<?> targetClass) {
+                var payload = message.getPayload();
+                if(payload instanceof byte[] payloadBytes)
+                    return new String(payloadBytes);
+
+                return payload;
+            }
+
+            @Override
+            public Message<?> toMessage(Object payload, MessageHeaders headers) {
+                return MessageBuilder.withPayload(payload).build();
+            }
+        };
+    }
 
 //    @Bean
 //    SuperStream superStream(Environment environment) {
