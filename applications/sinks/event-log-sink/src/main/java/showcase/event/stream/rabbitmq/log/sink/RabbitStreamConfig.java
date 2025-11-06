@@ -68,7 +68,7 @@ public class RabbitStreamConfig {
 
     @Bean
     Consumer consumer(Environment environment,
-                      java.util.function.Consumer<byte[]> consumerFunction){
+                      java.util.function.Consumer<String> consumerFunction){
 
         log.info("stream: {}, offset: {}, filterValues: {}, singleActiveConsumer: {}",
                 streamName,offset,filterValues,singleActiveConsumer);
@@ -100,7 +100,7 @@ public class RabbitStreamConfig {
         }
         return builder.offset(rabbitOffset)
                 .messageHandler((context, message) -> {
-                    consumerFunction.accept(message.getBodyAsBinary());
+                    consumerFunction.accept(new String(message.getBodyAsBinary()));
                 })
                 .build();
     }

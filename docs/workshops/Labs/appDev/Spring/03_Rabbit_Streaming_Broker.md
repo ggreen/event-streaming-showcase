@@ -284,7 +284,8 @@ kubectl exec  rabbitmq-server-0 -- rabbitmqctl enable_feature_flag stream_filter
 Create Consumer NY 
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-log-sink/event-log-sink-filter-NY.yml
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink-ny --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.profiles.active="stream" --spring.cloud.stream.bindings.input.destination="showcase.event.filter.streaming.accounts" --rabbitmq.streaming.offset="last" --rabbitmq.streaming.filter.values="NY"
+
 ```
 
 
