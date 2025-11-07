@@ -29,34 +29,34 @@ public class RabbitStreamConfig {
     @Value("${rabbitmq.streaming.use.filter:false}")
     private boolean isUseFilter;
 
+//    @Bean
+//    Queue stream(Environment environment) {
+//        log.info("Creating stream: {}",streamName);
+//
+//        environment.streamCreator().name(streamName)
+//                .create();
+//
+//        return QueueBuilder.durable(streamName)
+//                .build();
+//    }
+//
+//    @Bean
+//    Producer producer(Environment environment)
+//    {
+//        log.info("stream: {}, isUseFilter: {}",streamName,isUseFilter);
+//        var builder = environment.producerBuilder()
+//                .stream(streamName);
+//
+//        if(isUseFilter){
+//               builder = builder.filterValue(msg ->
+//                    valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM)));
+//        }
+//
+//        return builder.build();
+//    }
+//
     @Bean
-    Queue stream(Environment environment) {
-        log.info("Creating stream: {}",streamName);
-
-        environment.streamCreator().name(streamName)
-                .create();
-
-        return QueueBuilder.durable(streamName)
-                .build();
-    }
-
-    @Bean
-    Producer producer(Environment environment)
-    {
-        log.info("stream: {}, isUseFilter: {}",streamName,isUseFilter);
-        var builder = environment.producerBuilder()
-                .stream(streamName);
-
-        if(isUseFilter){
-               builder = builder.filterValue(msg ->
-                    valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM)));
-        }
-
-        return builder.build();
-    }
-
-    @Bean
-    MessageChannel publisher(Producer producer, Converter<Account,byte[]> converter)
+    MessageChannel publisher(RabbitStreamTemplate producer, Converter<Account,byte[]> converter)
     {
         return (msg, timeout) ->{
 
@@ -69,7 +69,7 @@ public class RabbitStreamConfig {
                     .messageBuilder()
                     .applicationProperties().entry(FILTER_PROP_NM,state)
                     .messageBuilder()
-                    .build(), confirmationStatus ->{});
+                    .build());
             return true;
         };
     }

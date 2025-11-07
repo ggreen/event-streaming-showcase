@@ -66,26 +66,13 @@ java -jar applications/sources/event-account-http-source/target/event-account-ht
 Testings
 
 
-View NJ filter accounts
-
-```shell
-kubectl logs deployment/event-log-sink-nj -f
-```
-
-Watch for "Started" message
-
-View NY filter accounts (new terminal)
-
-```shell
-kubectl logs deployment/event-log-sink-ny -f
-```
 
 
 Open Source App
 
 Example
 ```shell
-open http://localhost:8090/
+open http://localhost:8080/
 ```
 
 Test NY
