@@ -1,20 +1,19 @@
 package showcase.event.stream.rabbitmq.account.http.source;
 
 import com.rabbitmq.stream.Environment;
-import com.rabbitmq.stream.Producer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.config.ProducerMessageHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.integration.amqp.outbound.RabbitStreamMessageHandler;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.rabbit.stream.producer.RabbitStreamTemplate;
 import showcase.streaming.event.account.domain.Account;
-
-import static java.lang.String.valueOf;
 
 @Configuration
 @Slf4j
@@ -55,6 +54,30 @@ public class RabbitStreamConfig {
 //        return builder.build();
 //    }
 //
+
+    @Bean
+    ProducerMessageHandlerCustomizer<MessageHandler> handlerCustomizer() {
+        return (hand, dest) -> {
+            RabbitStreamMessageHandler handler = (RabbitStreamMessageHandler) hand;
+            handler.setConfirmTimeout(5000);
+            ((RabbitStreamTemplate) handler.getStreamOperations()).setProducerCustomizer(
+                    (name, builder) -> {
+                            builder.stream(streamName);
+
+                        if(isUseFilter){
+                            log.info("Using filter");
+                            builder = builder.filterValue(msg ->
+                                    {
+                                        var filterValue = String.valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM));
+                                        log.info("filterValue: {}",filterValue);
+                                        return filterValue;
+                                    });
+
+
+                        }
+                    });
+        };
+    }
     @Bean
     MessageChannel publisher(RabbitStreamTemplate producer, Converter<Account,byte[]> converter)
     {
@@ -75,8 +98,12 @@ public class RabbitStreamConfig {
     }
 
     @Bean
-    RabbitStreamTemplate rabbitStreamTemplate(Environment environment) {
-        return new RabbitStreamTemplate(environment,streamName);
+    RabbitStreamTemplate rabbitStreamTemplate(Environment environment, MessageConverter converter) {
+        var template = new RabbitStreamTemplate(environment,streamName);
+        template.setMessageConverter(converter);
+
+        return template;
     }
+
 
 }

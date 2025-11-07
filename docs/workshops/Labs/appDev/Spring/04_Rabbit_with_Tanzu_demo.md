@@ -3,10 +3,6 @@
 
 **Prerequisite**
 
-- Kubernetes cluster
-- RabbitMQ Operator
-- Download Source Code
-
 Example with git
 ```shell
 git clone https://github.com/ggreen/event-streaming-showcase.git
