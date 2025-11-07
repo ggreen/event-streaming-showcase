@@ -266,13 +266,20 @@ curl -X 'POST' \
 }'
 ```
 
-Stop Applications
-
+Stop Applications/RabbitMQ
 
 
 
 ---------------------------
 # 4 - RabbitMQ Stream Filter
+
+
+Restart RabbitMQ
+
+```shell
+deployment/local/containers/rabbit.sh
+```
+
 
 enable filtering
 
@@ -285,13 +292,15 @@ Create Consumer NY
 
 ```shell
 java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink-ny --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.profiles.active="stream" --spring.cloud.stream.bindings.input.destination="showcase.event.filter.streaming.accounts" --rabbitmq.streaming.offset="last" --rabbitmq.streaming.filter.values="NY"
-
 ```
 
 
 Create Consumer NJ
 
 ```shell
+
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink-nj --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.profiles.active="stream" --spring.cloud.stream.bindings.input.destination="showcase.event.filter.streaming.accounts" --rabbitmq.streaming.offset="last" --rabbitmq.streaming.filter.values="NJ"
+
 kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-log-sink/event-log-sink-filter-NJ.yml
 ```
 
@@ -299,7 +308,7 @@ kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/e
 Create Filtering Source
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-account-http-source/event-account-http-source-filter.yml
+java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --server.port="8080" --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.output.destination="showcase.event.filter.streaming.accounts" --rabbitmq.streaming.partitions="2" --spring.profiles.active="stream" --rabbitmq.streaming.use.filter="true"
 ```
 
 Testings
