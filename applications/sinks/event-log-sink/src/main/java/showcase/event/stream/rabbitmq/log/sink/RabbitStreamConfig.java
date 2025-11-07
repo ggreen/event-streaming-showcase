@@ -7,16 +7,17 @@
 
 package showcase.event.stream.rabbitmq.log.sink;
 
-import com.rabbitmq.stream.Consumer;
 import com.rabbitmq.stream.Environment;
 import com.rabbitmq.stream.OffsetSpecification;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import nyla.solutions.core.util.Debugger;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.config.ListenerContainerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.rabbit.stream.listener.StreamListenerContainer;
 
 import java.util.Arrays;
 
@@ -55,55 +56,102 @@ public class RabbitStreamConfig {
     private String[] filterValues;
 
     @Bean
-    Queue stream(Environment environment) {
-        log.info("Creating stream: {}",streamName);
+    ListenerContainerCustomizer<MessageListenerContainer> customizer(Environment environment) {
+        return (cont, dest, group) -> {
+            StreamListenerContainer container = (StreamListenerContainer) cont;
+            container.setConsumerCustomizer((name, builder) -> {
 
-        environment.streamCreator().name(streamName)
-                .create();
 
-        return QueueBuilder.durable(streamName)
-                .stream()
-                .build();
-    }
+                var rabbitOffset = offset(environment);
 
-    @Bean
-    Consumer consumer(Environment environment,
-                      java.util.function.Consumer<String> consumerFunction){
-
-        log.info("stream: {}, offset: {}, filterValues: {}, singleActiveConsumer: {}",
-                streamName,offset,filterValues,singleActiveConsumer);
-
-        var builder = environment.consumerBuilder()
-                .stream(streamName);
-
-        if(filterValues != null && filterValues.length > 0)
-                builder = builder.filter().values(filterValues)
+                //Process Filtering
+                log.info("Filtering with values: {}", Debugger.toString(filterValues));
+                builder.filter().values(filterValues)
                         .postFilter(msg ->
-                                Arrays.asList(filterValues)
-                                        .contains(valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM))))
-                        .builder();
+                                {
+                                var mustFilter = Arrays.asList(filterValues)
+                                        .contains(valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM)));
+                                log.info("Must filter: {} for values: {}",mustFilter,Debugger.toString(filterValues));
+                                return mustFilter;
+                                }
+                        );
 
-        var rabbitOffset = offset(environment);
+                if (singleActiveConsumer)
+                {
+                    log.info("setting single active consumer with name: {}",applicationName);
+                    builder.name(applicationName)
+                            .singleActiveConsumer();
 
-        if(singleActiveConsumer)
-            builder = builder.name(applicationName)
-                    .singleActiveConsumer();
+                }
 
-        if(OffsetSpecification.last().equals(rabbitOffset))
-            builder = builder.name(applicationName);
-        else if(OffsetSpecification.first().equals(rabbitOffset))
-        {
-            log.info("Replay all messages");
-            builder.subscriptionListener(
-                    subscriptionContext -> subscriptionContext
-                            .offsetSpecification(OffsetSpecification.first()));
-        }
-        return builder.offset(rabbitOffset)
-                .messageHandler((context, message) -> {
-                    consumerFunction.accept(new String(message.getBodyAsBinary()));
-                })
-                .build();
+                if (OffsetSpecification.last().equals(rabbitOffset))
+                {
+                    log.info("Setting name in stream: {}",applicationName);
+                    builder.name(applicationName);
+                }
+                else if (OffsetSpecification.first().equals(rabbitOffset)) {
+                    log.info("Replay all messages");
+                    builder.subscriptionListener(
+                            subscriptionContext -> subscriptionContext
+                                    .offsetSpecification(OffsetSpecification.first()));
+                }
+
+                log.info("Setting Offset: {}", rabbitOffset);
+                builder.offset(rabbitOffset);
+            });
+        };
     }
+
+//    @Bean
+//    Queue stream(Environment environment) {
+//        log.info("Creating stream: {}",streamName);
+////
+////        environment.streamCreator().name(streamName)
+////                .create();
+//
+//        return QueueBuilder.durable(streamName)
+//                .stream()
+//                .build();
+//    }
+//
+//    @Bean
+//    Consumer consumer(Environment environment,
+//                      java.util.function.Consumer<String> consumerFunction){
+//
+//        log.info("stream: {}, offset: {}, filterValues: {}, singleActiveConsumer: {}",
+//                streamName,offset,filterValues,singleActiveConsumer);
+//
+//        var builder = environment.consumerBuilder()
+//                .stream(streamName);
+//
+//        if(filterValues != null && filterValues.length > 0)
+//                builder = builder.filter().values(filterValues)
+//                        .postFilter(msg ->
+//                                Arrays.asList(filterValues)
+//                                        .contains(valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM))))
+//                        .builder();
+//
+//        var rabbitOffset = offset(environment);
+//
+//        if(singleActiveConsumer)
+//            builder = builder.name(applicationName)
+//                    .singleActiveConsumer();
+//
+//        if(OffsetSpecification.last().equals(rabbitOffset))
+//            builder = builder.name(applicationName);
+//        else if(OffsetSpecification.first().equals(rabbitOffset))
+//        {
+//            log.info("Replay all messages");
+//            builder.subscriptionListener(
+//                    subscriptionContext -> subscriptionContext
+//                            .offsetSpecification(OffsetSpecification.first()));
+//        }
+//        return builder.offset(rabbitOffset)
+//                .messageHandler((context, message) -> {
+//                    consumerFunction.accept(new String(message.getBodyAsBinary()));
+//                })
+//                .build();
+//    }
 
     OffsetSpecification offset(Environment environment){
         return switch (offset)
