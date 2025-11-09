@@ -2,7 +2,8 @@ package showcase.event.stream.rabbitmq.account.http.source;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+//import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -18,8 +19,8 @@ public class SerializationConfig {
     }
 
     @Bean
-    JacksonJsonMessageConverter conversion(){
-        return new JacksonJsonMessageConverter();
+    Jackson2JsonMessageConverter conversion(){
+        return new Jackson2JsonMessageConverter();
     }
 
     @Bean

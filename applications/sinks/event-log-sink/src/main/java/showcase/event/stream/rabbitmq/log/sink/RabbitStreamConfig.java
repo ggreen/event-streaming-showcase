@@ -102,57 +102,6 @@ public class RabbitStreamConfig {
         };
     }
 
-//    @Bean
-//    Queue stream(Environment environment) {
-//        log.info("Creating stream: {}",streamName);
-////
-////        environment.streamCreator().name(streamName)
-////                .create();
-//
-//        return QueueBuilder.durable(streamName)
-//                .stream()
-//                .build();
-//    }
-//
-//    @Bean
-//    Consumer consumer(Environment environment,
-//                      java.util.function.Consumer<String> consumerFunction){
-//
-//        log.info("stream: {}, offset: {}, filterValues: {}, singleActiveConsumer: {}",
-//                streamName,offset,filterValues,singleActiveConsumer);
-//
-//        var builder = environment.consumerBuilder()
-//                .stream(streamName);
-//
-//        if(filterValues != null && filterValues.length > 0)
-//                builder = builder.filter().values(filterValues)
-//                        .postFilter(msg ->
-//                                Arrays.asList(filterValues)
-//                                        .contains(valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM))))
-//                        .builder();
-//
-//        var rabbitOffset = offset(environment);
-//
-//        if(singleActiveConsumer)
-//            builder = builder.name(applicationName)
-//                    .singleActiveConsumer();
-//
-//        if(OffsetSpecification.last().equals(rabbitOffset))
-//            builder = builder.name(applicationName);
-//        else if(OffsetSpecification.first().equals(rabbitOffset))
-//        {
-//            log.info("Replay all messages");
-//            builder.subscriptionListener(
-//                    subscriptionContext -> subscriptionContext
-//                            .offsetSpecification(OffsetSpecification.first()));
-//        }
-//        return builder.offset(rabbitOffset)
-//                .messageHandler((context, message) -> {
-//                    consumerFunction.accept(new String(message.getBodyAsBinary()));
-//                })
-//                .build();
-//    }
-
     OffsetSpecification offset(Environment environment){
         return switch (offset)
                     {

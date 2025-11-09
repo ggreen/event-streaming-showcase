@@ -28,33 +28,6 @@ public class RabbitStreamConfig {
     @Value("${rabbitmq.streaming.use.filter:false}")
     private boolean isUseFilter;
 
-//    @Bean
-//    Queue stream(Environment environment) {
-//        log.info("Creating stream: {}",streamName);
-//
-//        environment.streamCreator().name(streamName)
-//                .create();
-//
-//        return QueueBuilder.durable(streamName)
-//                .build();
-//    }
-//
-//    @Bean
-//    Producer producer(Environment environment)
-//    {
-//        log.info("stream: {}, isUseFilter: {}",streamName,isUseFilter);
-//        var builder = environment.producerBuilder()
-//                .stream(streamName);
-//
-//        if(isUseFilter){
-//               builder = builder.filterValue(msg ->
-//                    valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM)));
-//        }
-//
-//        return builder.build();
-//    }
-//
-
     @Bean
     ProducerMessageHandlerCustomizer<MessageHandler> handlerCustomizer() {
         return (hand, dest) -> {
@@ -101,6 +74,22 @@ public class RabbitStreamConfig {
     RabbitStreamTemplate rabbitStreamTemplate(Environment environment, MessageConverter converter) {
         var template = new RabbitStreamTemplate(environment,streamName);
         template.setMessageConverter(converter);
+        template.setProducerCustomizer(
+                (name, builder) -> {
+                    builder.stream(streamName);
+
+                    if(isUseFilter){
+                        log.info("Using filter");
+                        builder = builder.filterValue(msg ->
+                        {
+                            var filterValue = String.valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM));
+                            log.info("filterValue: {}",filterValue);
+                            return filterValue;
+                        });
+
+
+                    }
+                });
 
         return template;
     }

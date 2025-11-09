@@ -5,8 +5,6 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
-import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,9 +45,9 @@ public class RabbitAmqpConfig {
         };
     }
 
-    @Bean
-    MessageConverter convert(){
-        return new JacksonJsonMessageConverter();
-    }
+//    @Bean
+//    MessageConverter convert(){
+//        return new JacksonJsonMessageConverter();
+//    }
 
 }
