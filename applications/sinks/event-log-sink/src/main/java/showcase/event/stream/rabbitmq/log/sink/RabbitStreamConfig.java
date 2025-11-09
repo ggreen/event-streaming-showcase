@@ -64,6 +64,7 @@ public class RabbitStreamConfig {
 
                 var rabbitOffset = offset(environment);
 
+
                 //Process Filtering
                 log.info("Filtering with values: {}", Debugger.toString(filterValues));
                 builder.filter().values(filterValues)

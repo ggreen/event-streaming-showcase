@@ -93,6 +93,29 @@ Test NY
 }
 ```
 
+```shell
+curl -X 'POST' \
+  'http://localhost:8080/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "NY1",
+  "name": "Event NY Filtering",
+  "accountType": "test",
+  "status": "IN-PROGRESS",
+  "notes": "Testing 222",
+  "location": {
+    "id": "002.002",
+    "address": "2 Straight Street",
+    "cityTown": "JamesTown",
+    "stateProvince": "NY",
+    "zipPostalCode": "45555",
+    "countryCode": "US"
+  }
+}'
+```
+
+
 Test NJ
 
 ```json
@@ -114,20 +137,29 @@ Test NJ
 ```
 
 
+```shell
+curl -X 'POST' \
+  'http://localhost:8080/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "001",
+  "name": "Event Demo 1",
+  "accountType": "test",
+  "status": "IN-PROGRESS",
+  "notes": "Testing 123",
+  "location": {
+    "id": "001.001",
+    "address": "1 Straight Street",
+    "cityTown": "Wayne",
+    "stateProvince": "NJ",
+    "zipPostalCode": "55555",
+    "countryCode": "US"
+  }
+}'
+```
+
 ---------------------------
 # 5 - Cleanup
 
-Delete Apps
-```shell
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-log-sink/event-log-sink.yml
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-account-http-source/event-account-http-source.yml
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-log-sink/event-log-sink-filter-NY.yml
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-log-sink/event-log-sink-filter-NJ.yml
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/apps/event-account-http-source/event-account-http-source-filter.yml
-```
-
-Delete RabbitMQ
-
-```shell
-kubectl delete -f https://raw.githubusercontent.com/Tanzu-Solutions-Engineering/event-streaming-showcase/main/deployment/cloud/k8/data-services/rabbitmq/rabbitmq-1-node.yml
-```
+Stop Apps and RabbitMQ
