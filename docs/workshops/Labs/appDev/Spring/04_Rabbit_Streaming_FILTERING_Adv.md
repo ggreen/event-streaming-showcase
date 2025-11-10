@@ -1,4 +1,4 @@
-# LAB 04 - Filtering
+# LAB 04 - Rabbit Advance Filtering
 
 
 **Prerequisite**
@@ -35,7 +35,7 @@ open http://localhost:15672
 
 
 ---------------------------
-# 4 - RabbitMQ Stream Filter
+#  RabbitMQ Stream Filter
 
 
 

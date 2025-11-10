@@ -1,10 +1,6 @@
-# LAB 03 - 
-
+# LAB 03 - Rabbit as a Streaming Broker
 
 **Prerequisite**
-
-- Dotnet SDK 7.0.401 or higher
-- Docker version 4.29 or higher
 
 Create the podman network (if not existing)
 ```shell
@@ -265,6 +261,8 @@ curl -X 'POST' \
   }
 }'
 ```
+
+# Clean Up
 
 Stop Applications/RabbitMQ
 
