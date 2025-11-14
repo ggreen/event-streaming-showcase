@@ -65,11 +65,6 @@ java -jar applications/sources/event-account-http-source/target/event-account-ht
 Testings
 
 
-
-
-Open Source App
-
-Example
 ```shell
 open http://localhost:8080/
 ```
@@ -93,6 +88,7 @@ Test NY
 }
 ```
 
+Using Curl
 ```shell
 curl -X 'POST' \
   'http://localhost:8080/accounts' \
@@ -163,7 +159,7 @@ curl -X 'POST' \
 # SQL Filtering
 
 
-Create Filtering Source
+Http SQL Filtering Source
 
 ```shell
 java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --server.port="8087" --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.output.destination="accounts.account.sql" --spring.profiles.active="stream" --rabbitmq.streaming.use.filter="true"
@@ -175,6 +171,9 @@ java -jar applications/processors/stream-sql-filter-processor/target/stream-sql-
 ```
 
 
+
+Not Filtered
+
 ```shell
 curl -X 'POST' \
   'http://localhost:8087/accounts' \
@@ -182,7 +181,32 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "id": "W001",
-  "name": "Event Demo from SQL Fitler",
+  "name": "Event Demo from SQL Filter",
+  "accountType": "test",
+  "status": "IN-PROGRESS",
+  "notes": "Testing 123",
+  "location": {
+    "id": "001.001",
+    "address": "1 Straight Street",
+    "cityTown": "Wayne",
+    "stateProvince": "NJ",
+    "zipPostalCode": "55555",
+    "countryCode": "US"
+  }
+}'
+```
+
+
+Will be Filtered
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8087/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "F001",
+  "name": "Will not be delivered",
   "accountType": "test",
   "status": "IN-PROGRESS",
   "notes": "Testing 123",
