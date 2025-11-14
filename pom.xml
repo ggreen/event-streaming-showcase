@@ -33,6 +33,7 @@
         <module>applications/processors/csv-json-processor</module>
         <module>applications/processors/json-xml-processor</module>
         <module>applications/processors/freemarker-processor</module>
+        <module>applications/processors/stream-sql-filter-processor</module>
     </modules>
     <build>
         <pluginManagement>
