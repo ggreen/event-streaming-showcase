@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Slf4j
@@ -34,10 +35,6 @@ class RabbitAmqp1_0Config {
     @Value("${spring.cloud.stream.bindings.input.destination:inputFilter}")
     private String inputQueue;
 
-    @Value("${spring.cloud.stream.bindings.output.destination:outputFilter}")
-    private String outputQueue;
-
-
     @Value("${stream.filter.sql}")
     private String sqlFilter;
 
@@ -49,7 +46,7 @@ class RabbitAmqp1_0Config {
                 .build();
     }
 
-    @Bean
+    @Bean("inputConnection")
     Connection amqpConnection(Environment environment)
     {
         return environment.connectionBuilder().host(host)
@@ -59,19 +56,11 @@ class RabbitAmqp1_0Config {
                 .build();
     }
 
-    @Bean
-    Publisher publisher(Connection connection,
-                        @Qualifier("output") Management.QueueInfo output){
 
-        log.info("output published to {}",output.name());
-
-        return connection.publisherBuilder()
-                .queue(output.name())
-                .build();
-    }
 
     @Bean
-    Consumer consumer(Connection connection, Publisher publisher, @Qualifier("input") Management.QueueInfo input){
+    Consumer consumer(@Qualifier("inputConnection") Connection connection, Publisher publisher,
+                      @Qualifier("input") Management.QueueInfo input){
 
         log.info("input consumed with SQL '{}' from input stream {}",sqlFilter,input.name());
 
@@ -91,21 +80,28 @@ class RabbitAmqp1_0Config {
 
                     //Publish output
                     publisher.publish(outputMsg, outCtx ->{
-                        log.info("Sent output status: {}",outCtx.status());
+
+                        if(outCtx.status() == Publisher.Status.ACCEPTED)
+                            //confirm message
+                            ctx.accept();
+                        else
+                            log.warn("Status {} != ACCEPTED",outCtx.status()); // do not accept message
                     });
+
+
                 })
                 .build();
     }
 
 
-    @Bean
-    Management amqpManagement(Connection connection)
+    @Bean("inputManagement")
+    Management amqpManagement(@Qualifier("inputConnection") Connection connection)
     {
         return connection.management();
     }
 
     @Bean("input")
-    Management.QueueInfo inputQueue(Management management)
+    Management.QueueInfo inputQueue(@Qualifier("inputManagement") Management management)
     {
         return management
                 .queue()
@@ -115,14 +111,4 @@ class RabbitAmqp1_0Config {
                 .declare();
     }
 
-    @Bean("output")
-    Management.QueueInfo outputQueue(Management management)
-    {
-        return management
-                .queue()
-                .name(outputQueue)
-                .stream()
-                .queue()
-                .declare();
-    }
 }
