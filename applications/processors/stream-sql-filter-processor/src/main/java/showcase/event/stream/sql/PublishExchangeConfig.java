@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @Profile("outputExchange")
 @Slf4j
-public class OutputExchangeConfig {
+public class PublishExchangeConfig {
     @Value("${spring.cloud.stream.bindings.output.destination:sql.filter}")
     private String outputExchange;
 

@@ -158,6 +158,44 @@ curl -X 'POST' \
   }
 }'
 ```
+---------------------------
+
+# SQL Filtering
+
+
+Create Filtering Source
+
+```shell
+java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --server.port="8087" --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.output.destination="accounts.account.sql" --spring.profiles.active="stream" --rabbitmq.streaming.use.filter="true"
+```
+
+
+```shell
+java -jar applications/processors/stream-sql-filter-processor/target/stream-sql-filter-processor-1.0.0.jar --stream.filter.sql="properties.message_id LIKE 'W%' AND stateProvince IN('CA','NY','NJ')" --spring.profiles.active=outputStream --spring.cloud.stream.bindings.input.destination="accounts.account.sql" --spring.cloud.stream.bindings.output.destination="accounts.account.state"
+```
+
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8087/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "W001",
+  "name": "Event Demo from SQL Fitler",
+  "accountType": "test",
+  "status": "IN-PROGRESS",
+  "notes": "Testing 123",
+  "location": {
+    "id": "001.001",
+    "address": "1 Straight Street",
+    "cityTown": "Wayne",
+    "stateProvince": "NJ",
+    "zipPostalCode": "55555",
+    "countryCode": "US"
+  }
+}'
+```
 
 ---------------------------
 # 5 - Cleanup

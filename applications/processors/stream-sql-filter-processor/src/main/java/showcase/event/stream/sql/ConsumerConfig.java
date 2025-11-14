@@ -3,15 +3,19 @@ package showcase.event.stream.sql;
 import com.rabbitmq.client.amqp.*;
 import com.rabbitmq.client.amqp.impl.AmqpEnvironmentBuilder;
 import lombok.extern.slf4j.Slf4j;
+import nyla.solutions.core.util.Debugger;
+import nyla.solutions.core.util.Text;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @Slf4j
-class RabbitAmqp1_0Config {
+class ConsumerConfig {
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -71,19 +75,40 @@ class RabbitAmqp1_0Config {
                 .filter()
                 .sql(sqlFilter)
                 .stream()
-                .builder().messageHandler((ctx,msg) -> {
+                .builder().messageHandler((ctx,inputMessage) -> {
                     //Processing input message
-                    log.info("Processing msg id: {}",
-                            msg.messageId());
+                    log.info("Processing input: {}, msg id: {}", inputQueue, inputMessage.messageId());
 
-                    var outputMsg = publisher.message(msg.body());
+                    var outputMap = new HashMap<String,String>();
+                    inputMessage.forEachProperty((name,value)-> {
+                        var valueText = Text.toString(value);
+                        log.info("Setting property: {}, value: {}",name,valueText);
+                        outputMap.put(name, valueText);
+                    });
+
+                    if(outputMap.isEmpty())
+                    {
+                        log.warn("No properties provided to filter Nothing to filter");
+                        return; //exit
+                    }
+
+                    Map.Entry<String,String> entry =  outputMap.entrySet().iterator().next();
+                    log.info("entry: {}",entry);
+
+                    var outputMsg = publisher.message(inputMessage.body())
+                            .annotation("x-stream-filter-value", entry.getValue())
+                            .subject(entry.getValue())
+                                    .property(entry.getKey(),entry.getValue());
 
                     //Publish output
                     publisher.publish(outputMsg, outCtx ->{
 
                         if(outCtx.status() == Publisher.Status.ACCEPTED)
+                        {
                             //confirm message
                             ctx.accept();
+                            log.warn("Message Sent");
+                        }
                         else
                             log.warn("Status {} != ACCEPTED",outCtx.status()); // do not accept message
                     });

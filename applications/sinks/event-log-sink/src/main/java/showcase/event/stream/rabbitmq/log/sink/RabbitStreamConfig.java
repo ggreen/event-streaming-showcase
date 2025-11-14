@@ -66,10 +66,13 @@ public class RabbitStreamConfig {
 
 
                 //Process Filtering
-                log.info("Filtering with values: {}", Debugger.toString(filterValues));
+                log.info("Filtering {} with values: {}", FILTER_PROP_NM, Debugger.toString(filterValues));
                 builder.filter().values(filterValues)
                         .postFilter(msg ->
                                 {
+                                    if(msg.getApplicationProperties() == null)
+                                        return false;
+
                                 var mustFilter = Arrays.asList(filterValues)
                                         .contains(valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM)));
                                 log.info("Must filter: {} for values: {}",mustFilter,Debugger.toString(filterValues));
