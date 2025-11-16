@@ -28,7 +28,7 @@ public class AccountController {
     public void publish(@RequestBody Account account) {
         log.info("Publishing Account: {}",account);
         publisher.send(MessageBuilder.withPayload(account)
-                .setHeader(ROUTING_KEY,account.getId())
+                .setHeader(ROUTING_KEY,account.getAccountType())
                         .setHeader(MessageHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build());
     }

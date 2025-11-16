@@ -10,21 +10,11 @@ git clone https://github.com/ggreen/event-streaming-showcase.git
 cd event-streaming-showcase
 ```
 
-
-Create the podman network (if not existing)
-```shell
-podman network create tanzu
-```
-
-- Run RabbitMQ (if not running)
+Run RabbitMQ 
 
 ```shell
-podman run --name rabbitmq01  --network tanzu --rm -it -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  rabbitmq:4.2-management 
+deployment/local/containers/rabbit.sh
 ```
-
-- View Logs (wait for message: started TCP listener on [::]:5672)
-
-
 
 - Open Management Console with credentials *guest/guest*
 ```shell
@@ -125,27 +115,72 @@ Stop Publisher and Consumers
 
 ## Start Consumer
 ```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar  --clientName=Receive1 --queue=app.receive.1 --server.port=0
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar  --spring.application.name=event-log-corporate --spring.cloud.stream.rabbit.bindings.input.consumer.bindingRoutingKey=corporate --server.port=0 --spring.cloud.stream.rabbit.bindings.input.consumer.exchangeType=direct --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true --spring.cloud.stream.bindings.input.destination=accounts.account.direct
 ```
+
 Start Another Consumer
+
 ```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar --clientName=Receive2 --queue=app.receive.2  --server.port=0
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar  --spring.application.name=event-log-residential --spring.cloud.stream.rabbit.bindings.input.consumer.bindingRoutingKey=residential --server.port=0 --spring.cloud.stream.rabbit.bindings.input.consumer.exchangeType=direct --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true --spring.cloud.stream.bindings.input.destination=accounts.account.direct
 ```
 
 
 ## Start Publisher
 
-Publish
+Publish with direct exchange
 
 ```shell
- java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar --routingKey=app.receive.1 --message="Testing app.receive.1"  --server.port=0
+ java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --amqp.exchange.direct=true  --spring.profiles.active=amqp --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account.direct
 ``` 
-Hit Enter
+
+Publisher
 
 ```shell
- java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar --routingKey=app.receive.2 --message="Testing app.receive.2"  --server.port=0
+curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "01",
+  "name": "corporate account 1",
+  "accountType": "corporate",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "acc-02-loc-02",
+    "address": "123 Straight Street",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
 ```
-Hit Enter
+
+
+Publish account
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "R01",
+  "name": "residential account 1",
+  "accountType": "residential",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "residential-02-loc-02",
+    "address": "123 Straight Street",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
+```
 
 
 Stop Publisher and Consumers
@@ -154,32 +189,90 @@ Stop Publisher and Consumers
 # 2 - Topic Exchange Routing
 
 
+Consumer Properties start with 
+
+    spring.cloud.stream.rabbit.bindings.input.consumer..
 
 ## Start Consumer
+
 ```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=rahway --exchange="amq.topic" --routingKey="city.Rahway.*" --queue=app.receive.rahway  --server.port=0
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar  --spring.application.name=event-log-premium  --server.port=0 --spring.cloud.stream.rabbit.bindings.input.consumer.exchangeType=topic --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true --spring.cloud.stream.bindings.input.destination=accounts.account.categories --spring.cloud.stream.rabbit.bindings.input.consumer.bindingRoutingKey="premium.#"
 ``` 
 Start Another Consumer
 ```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar  --clientName=ny --exchange="amq.topic" --routingKey="city.NY.#" --queue=app.receive.ny  --server.port=0
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar  --spring.application.name=event-log-standard --server.port=0 --spring.cloud.stream.rabbit.bindings.input.consumer.exchangeType=topic --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true --spring.cloud.stream.bindings.input.destination=accounts.account.categories --spring.cloud.stream.rabbit.bindings.input.consumer.bindingRoutingKey="standard.#"
 ```
 
 
 ## Start Publisher
 
-Publish
+Start Source
 
 ```shell
- java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar   --exchange="amq.topic" --routingKey=city.NY.uptown.store --message="Testing NY City"  --server.port=0
+ java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --amqp.exchange.direct=true  --spring.profiles.active=amqp --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account.categories
 ```
 
-Hit Enter
 
+
+Testing
 
 ```shell
- java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar   --exchange="amq.topic" --routingKey=city.Rahway.office --message="Testing Rahway"  --server.port=0
+ curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "PR01",
+  "name": "premium residential account 1",
+  "accountType": "standard.residential",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "premium-02-loc-02",
+    "address": "123 Straight Street",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
 ```
 
-Hit Enter
+Send Standard Account
+
+```shell
+ curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "CR01",
+  "name": "standard residential account 1",
+  "accountType": "standard.residential",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "premium-02-loc-02",
+    "address": "123 Straight Street",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
+```
+
+
+---------------------------
+# 3 - Error Handling - Dead letter - Exchange
+
+
+Start Http
+
+
+
+----------------
+
+# Cleanup
 
 Stop Publisher and Consumers
