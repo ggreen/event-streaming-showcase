@@ -44,10 +44,4 @@ public class RabbitAmqpConfig {
             return true;
         };
     }
-
-//    @Bean
-//    MessageConverter convert(){
-//        return new JacksonJsonMessageConverter();
-//    }
-
 }

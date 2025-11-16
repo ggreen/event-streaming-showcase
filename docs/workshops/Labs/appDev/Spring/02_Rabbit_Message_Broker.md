@@ -35,12 +35,12 @@ open http://localhost:15672
 
 ## Start Consumer
 ```shell
-java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true
 ```
 Start Another Consumer
 
 ```shell
-java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink2  --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink2  --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true
 ```
 
 ## Start Publisher
@@ -125,11 +125,11 @@ Stop Publisher and Consumers
 
 ## Start Consumer
 ```shell
-java -jar applications/rabbit-consumer/target/rabbit-consumer-0.0.1-SNAPSHOT.jar  --clientName=Receive1 --queue=app.receive.1
+java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar  --clientName=Receive1 --queue=app.receive.1 --server.port=0
 ```
 Start Another Consumer
 ```shell
-java -jar applications/rabbit-consumer/target/rabbit-consumer-0.0.1-SNAPSHOT.jar --clientName=Receive2 --queue=app.receive.2
+java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar --clientName=Receive2 --queue=app.receive.2  --server.port=0
 ```
 
 
@@ -138,12 +138,12 @@ java -jar applications/rabbit-consumer/target/rabbit-consumer-0.0.1-SNAPSHOT.jar
 Publish
 
 ```shell
- java -jar applications/rabbit-publisher/target/rabbit-publisher-0.0.1-SNAPSHOT.jar --routingKey=app.receive.1 --message="Testing app.receive.1"
-```
+ java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar --routingKey=app.receive.1 --message="Testing app.receive.1"  --server.port=0
+``` 
 Hit Enter
 
 ```shell
- java -jar applications/rabbit-publisher/target/rabbit-publisher-0.0.1-SNAPSHOT.jar --routingKey=app.receive.2 --message="Testing app.receive.2"
+ java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar --routingKey=app.receive.2 --message="Testing app.receive.2"  --server.port=0
 ```
 Hit Enter
 
@@ -157,11 +157,11 @@ Stop Publisher and Consumers
 
 ## Start Consumer
 ```shell
-java -jar applications/rabbit-consumer/target/rabbit-consumer-0.0.1-SNAPSHOT.jar   --clientName=rahway --exchange="amq.topic" --routingKey="city.Rahway.*" --queue=app.receive.rahway
-```
+java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=rahway --exchange="amq.topic" --routingKey="city.Rahway.*" --queue=app.receive.rahway  --server.port=0
+``` 
 Start Another Consumer
 ```shell
-java -jar applications/rabbit-consumer/target/rabbit-consumer-0.0.1-SNAPSHOT.jar  --clientName=ny --exchange="amq.topic" --routingKey="city.NY.#" --queue=app.receive.ny
+java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar  --clientName=ny --exchange="amq.topic" --routingKey="city.NY.#" --queue=app.receive.ny  --server.port=0
 ```
 
 
@@ -170,14 +170,14 @@ java -jar applications/rabbit-consumer/target/rabbit-consumer-0.0.1-SNAPSHOT.jar
 Publish
 
 ```shell
- java -jar applications/rabbit-publisher/target/rabbit-publisher-0.0.1-SNAPSHOT.jar   --exchange="amq.topic" --routingKey=city.NY.uptown.store --message="Testing NY City"
+ java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar   --exchange="amq.topic" --routingKey=city.NY.uptown.store --message="Testing NY City"  --server.port=0
 ```
 
 Hit Enter
 
 
 ```shell
- java -jar applications/rabbit-publisher/target/rabbit-publisher-0.0.1-SNAPSHOT.jar   --exchange="amq.topic" --routingKey=city.Rahway.office --message="Testing Rahway"
+ java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar   --exchange="amq.topic" --routingKey=city.Rahway.office --message="Testing Rahway"  --server.port=0
 ```
 
 Hit Enter
