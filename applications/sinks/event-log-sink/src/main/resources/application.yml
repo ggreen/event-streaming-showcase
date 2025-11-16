@@ -19,8 +19,9 @@ spring:
 #            consumer:
 #              declareExchange: false
 #              bindQueue: false
-      binder:
-        connection-name-prefix: ${spring.application.name}
+      rabbit:
+        binder:
+          connection-name-prefix: ${spring.application.name}
     function:
       definition: loggingConsumer
 #      default:

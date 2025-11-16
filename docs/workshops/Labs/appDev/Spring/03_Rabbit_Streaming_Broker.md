@@ -35,7 +35,7 @@ open http://localhost:15672
 ## Start Consumer
 
 ```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar  --clientName=ReceiveStream1 --queue=app.receive.stream --queueType=stream --autoAck=false
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=accounts.account --spring.profiles.active=stream --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.containerType=STREAM
 ```
 
 
@@ -44,14 +44,98 @@ java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.
 Publish
 
 ```shell
-java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar  --routingKey=app.receive.stream --message="Testing app.receive STREAMING DATA 1"
+java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.profiles.active=stream --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account
 ```
+
+Send message
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "01",
+  "name": "Account 1",
+  "accountType": "business",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "acc-01-loc-01",
+    "address": "123 ",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
+```
+
 
 Send another message
 
 ```shell
-java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar  --routingKey=app.receive.stream --message="Testing app.receive STREAMING DATA 2"
+curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "02",
+  "name": "Account 2",
+  "accountType": "business",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "acc-01-loc-01",
+    "address": "123 ",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
 ```
+
+Stop Consumer
+
+Start with options to replay all messages
+
+```shell
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=accounts.account --spring.profiles.active=stream --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.containerType=STREAM --rabbitmq.streaming.offset=first
+```
+
+
+Start From last
+
+```shell
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=accounts.account --spring.profiles.active=stream --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.containerType=STREAM --rabbitmq.streaming.offset=next
+```
+
+
+Send another message
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8095/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "03",
+  "name": "Account Next",
+  "accountType": "business",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "acc-01-loc-01",
+    "address": "123 ",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
+```
+
 
 ## Review  Management Console (guest/guest)
 
@@ -66,41 +150,7 @@ Review  Management Console
 - Click Queues and Streams
 
 
-Stop Consumer
 
----------------------------
-# 2 - Stream Offsets
-
-
-## Start Consumer
-
-Replay all messages
-```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=ReceiveStream1 --queue=app.receive.stream --queueType=stream --streamOffset=first --autoAck=false 
-```
-
-Hit Enter/Control C
-
-Reading last chunk
-```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=ReceiveStream1 --queue=app.receive.stream --queueType=stream --streamOffset=last --autoAck=false
-```
-Hit Enter/Control C
-
-Reading next message
-
-```shell
-java -jar applications/sinks/rabbit-consumer-cli/target/rabbit-consumer-cli-1.0.0.jar   --clientName=ReceiveStream1 --queue=app.receive.stream --autoAck=false --queueType=stream --streamOffset=next 
-```
-
-Send another message
-
-```shell
-java -jar applications/sources/rabbit-publisher-cli/target/rabbit-publisher-cli-1.0.0.jar --routingKey=app.receive.stream --message="NEXT MESSAGE"
-```
-
-
-Stop Customer
 
 # Shutdown/Cleanup
 
@@ -142,7 +192,7 @@ open http://localhost:8080/swagger-ui/index.html
 {
   "id": "001",
   "name": "Event Demo 1",
-  "accountType": "test",
+  "accountType": "standard",
   "status": "IN-PROGRESS",
   "notes": "Testing 123",
   "location": {
@@ -167,7 +217,7 @@ curl -X 'POST' \
   -d '{
   "id": "001",
   "name": "Event Demo 1",
-  "accountType": "test",
+  "accountType": "standard",
   "status": "IN-PROGRESS",
   "notes": "Testing 123",
   "location": {
@@ -199,7 +249,7 @@ open http://localhost:8080/swagger-ui/index.html
 {
   "id": "002",
   "name": "Event Demo 2",
-  "accountType": "test",
+  "accountType": "residential",
   "status": "IN-PROGRESS",
   "notes": "Testing 222",
   "location": {
@@ -222,7 +272,7 @@ curl -X 'POST' \
   -d '{
   "id": "002",
   "name": "Event Demo 2",
-  "accountType": "test",
+  "accountType": "residential",
   "status": "IN-PROGRESS",
   "notes": "Testing 222",
   "location": {
@@ -238,7 +288,7 @@ curl -X 'POST' \
 
 
 
-Example CLI
+Send Message
 
 ```shell
 curl -X 'POST' \
@@ -248,7 +298,7 @@ curl -X 'POST' \
   -d '{
   "id": "003",
   "name": "Event Demo 3",
-  "accountType": "test",
+  "accountType": "premium",
   "status": "IN-PROGRESS",
   "notes": "Testing 3",
   "location": {
@@ -262,8 +312,38 @@ curl -X 'POST' \
 }'
 ```
 
+
+Loop
+
+```shell
+for i in {1..100}; do
+    curl -X 'POST' \
+  'http://localhost:8080/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d "{
+  \"id\": \"00$i\",
+  \"name\": \"Acct Demo i\",
+  \"accountType\": \"premium$i\",
+  \"status\": \"IN-PROGRESS\",
+  \"notes\": \"Testing 3\",
+  \"location\": {
+    \"id\": \"002.002\",
+    \"address\": \"2 Straight Street\",
+    \"cityTown\": \"JamesTown\",
+    \"stateProvince\": \"NY\",
+    \"zipPostalCode\": \"45555\",
+    \"countryCode\": \"US\"
+  }
+}";
+done;
+```
+
 # Clean Up
 
 Stop Applications/RabbitMQ
 
 
+```shell
+podman rm -f rabbitmq
+```

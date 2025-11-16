@@ -64,21 +64,23 @@ public class RabbitStreamConfig {
 
                 var rabbitOffset = offset(environment);
 
-
                 //Process Filtering
                 log.info("Filtering {} with values: {}", FILTER_PROP_NM, Debugger.toString(filterValues));
-                builder.filter().values(filterValues)
-                        .postFilter(msg ->
-                                {
-                                    if(msg.getApplicationProperties() == null)
-                                        return false;
+                if(filterValues != null && filterValues.length > 0)
+                {
+                    builder.filter().values(filterValues)
+                            .postFilter(msg ->
+                                    {
+                                        if(msg.getApplicationProperties() == null)
+                                            return false;
 
-                                var mustFilter = Arrays.asList(filterValues)
-                                        .contains(valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM)));
-                                log.info("Must filter: {} for values: {}",mustFilter,Debugger.toString(filterValues));
-                                return mustFilter;
-                                }
-                        );
+                                        var mustFilter = Arrays.asList(filterValues)
+                                                .contains(valueOf(msg.getApplicationProperties().get(FILTER_PROP_NM)));
+                                        log.info("Must filter: {} for values: {}",mustFilter,Debugger.toString(filterValues));
+                                        return mustFilter;
+                                    }
+                            );
+                }
 
                 if (singleActiveConsumer)
                 {
