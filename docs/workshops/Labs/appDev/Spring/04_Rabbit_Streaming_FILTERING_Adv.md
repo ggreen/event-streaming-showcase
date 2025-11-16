@@ -3,14 +3,6 @@
 
 **Prerequisite**
 
-
-Create the podman network (if not existing)
-```shell
-podman network create tanzu
-```
-
-- Download Source Code
-
 Example with git
 ```shell
 git clone https://github.com/ggreen/event-streaming-showcase.git
@@ -18,7 +10,7 @@ cd event-streaming-showcase
 ```
 
 
-- Run RabbitMQ (if not running)
+- Run RabbitMQ 
 
 ```shell
 deployment/local/containers/rabbit.sh
@@ -159,12 +151,22 @@ curl -X 'POST' \
 # SQL Filtering
 
 
+Stop NJ Consumer
+
+restart Consumer NJ
+
+```shell
+
+java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink-nj --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.profiles.active="stream" --spring.cloud.stream.bindings.input.destination="accounts.account.state" --rabbitmq.streaming.offset="last" --rabbitmq.streaming.filter.values="NJ"
+```
+
 Http SQL Filtering Source
 
 ```shell
 java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.stream.host=localhost --server.port="8087" --spring_rabbitmq_username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.output.destination="accounts.account.sql" --spring.profiles.active="stream" --rabbitmq.streaming.use.filter="true"
 ```
 
+Start SQL Processor
 
 ```shell
 java -jar applications/processors/stream-sql-filter-processor/target/stream-sql-filter-processor-1.0.0.jar --stream.filter.sql="properties.message_id LIKE 'W%' AND stateProvince IN('CA','NY','NJ')" --spring.profiles.active=outputStream --spring.cloud.stream.bindings.input.destination="accounts.account.sql" --spring.cloud.stream.bindings.output.destination="accounts.account.state"
