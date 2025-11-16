@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: super
+          group: event-log-sink
+          consumer:
+            instance-count: 3
+            concurrency: 1
+      rabbit:
+        bindings:
+          input:
+            consumer:
+              container-type: STREAM
+              super-stream: true

@@ -16,6 +16,7 @@ import java.util.function.Consumer;
         private final AccountRepository repository;
         @Override
         public void accept(AccountEntity account) {
+            log.info("Save account: {}",account);
             repository.save(account);
 
         }

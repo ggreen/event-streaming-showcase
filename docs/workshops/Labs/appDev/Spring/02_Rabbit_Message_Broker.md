@@ -267,12 +267,111 @@ Send Standard Account
 # 3 - Error Handling - Dead letter - Exchange
 
 
-Start Http
+## Start Consumer
 
 
+Start Postgres
+
+
+```shell
+podman run --rm --network=tanzu -it  --name postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_DB=postgres \
+  -e POSTGRES_HOST_AUTH_METHOD=trust \
+  -p 5432:5432 \
+  postgres:15
+```
+
+
+Start Sink
+
+```shell
+java -jar applications/sinks/event-account-jdbc-sink/target/event-account-jdbc-sink-1.0.0.jar --db.schema=evt_showcase --spring.application.name=event-log-audit  --server.port=0 --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true --spring.cloud.stream.bindings.input.destination=accounts.account.categories  --spring.datasource.username=postgres  --spring.datasource.url=jdbc:postgresql://localhost:5432/postgres --spring.cloud.stream.rabbit.bindings.input.consumer.autoBindDlq=true --spring.cloud.stream.rabbit.bindings.input.consumer.dlqQuorum.enabled=true
+``` 
+
+
+## Start Source Http
+
+```shell
+java -jar applications/sources/http-amqp-source/target/http-amqp-source-1.0.0.jar --spring.application.name="http-amqp-source" --spring.cloud.stream.bindings.output.destination=accounts.account.categories --server.port=8098
+```
+Success Message
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8098/amqp/?exchange=accounts.account.categories&routingKey=01' \
+  -H 'accept: application/hal+json' \
+  -H 'rabbitContentType: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "G01",
+  "name": "account 1",
+  "accountType": "good",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "premium-02-loc-02",
+    "address": "123 Straight Street",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
+```
+
+
+```shell
+podman exec -it postgres psql -d postgres -U postgres
+```
+
+Select Results
+
+```sql
+select *  from evt_showcase.evt_accounts ;
+select *  from evt_showcase.evt_locations ;
+
+```
+
+Does not match Account JSON structure
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8098/amqp/?exchange=accounts.account.categories&routingKey=accounts.error' \
+  -H 'accept: application/hal+json' \
+  -H 'rabbitContentType: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "idDELETE": "ER01",
+  "name": "error account 1",
+  "accountType": "error",
+  "status": "OPEN",
+  "notes": "Notes for account",
+  "location": {
+    "id": "premium-02-loc-02",
+    "address": "123 Straight Street",
+    "cityTown": "Springfield",
+    "stateProvince": "IL",
+    "zipPostalCode": "62701",
+    "countryCode": "US"
+  }
+}'
+```
+
+
+See Message in Queue accounts.account.categories.event-log-audit.dlq
+
+
+```shell
+open http://localhost:15672/#/queues/%2F/accounts.account.categories.event-log-audit.dlq
+```
 
 ----------------
 
 # Cleanup
 
 Stop Publisher and Consumers
+
+```shell
+podman rm -f rabbitmq postgres
+```

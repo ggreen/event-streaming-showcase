@@ -1,0 +1,22 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: account-jdbc-amqp-sink
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+  cloud:
+    function:
+      definition: accountConsumer
+    stream:
+      function:
+        bindings:
+          accountConsumer-in-0: input
+      bindings:
+        input:
+          group: ${spring.application.name}
+      binder:
+        connection-name-prefix: ${spring.application.name}

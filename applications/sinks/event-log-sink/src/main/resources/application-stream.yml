@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: stream
+          group: ${spring.cloud.stream.bindings.input.destination}
+          consumer:
+            instance-count: 3
+            concurrency: 1
+      rabbit:
+        bindings:
+          input:
+            consumer:
+              container-type: STREAM
+              super-stream: false
+              queueNameGroupOnly: true
