@@ -15,7 +15,7 @@ See examples [applications](applications)
 
 # Workshop LABS
 
-The repositories also has a collection of the hands-on labs.
+The repositories also have a collection of hands-on labs.
 
 [Labs](docs/workshops/Labs)
 

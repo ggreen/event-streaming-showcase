@@ -20,7 +20,7 @@ cd event-streaming-showcase
 
 - Run RabbitMQ
 ```shell
-podman run --name rabbitmq01  --network tanzu --rm -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  rabbitmq:4.2-management 
+deployment/local/containers/rabbit.sh 
 ```
 
 
@@ -37,6 +37,12 @@ java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar   --
 
 Review  Management Console
 
+```shell
+open http://localhost:15672
+```
+
+User/password: guest/guest
+
 - Click Overview
 - Click Connections
 - Click Queues and Streams
@@ -44,7 +50,8 @@ Review  Management Console
 
 # 3 - Run Publisher
 
-In new terminal
+Open a new terminal
+
 ```shell
  java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --spring.profiles.active=amqp --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account 
 ```
@@ -102,7 +109,7 @@ curl -X 'POST' \
 }'
 ```
 
-Check if Receive app consumed message 
+Check if the message was received by the consumer.
 
 Review  Management Console 
 
@@ -111,4 +118,61 @@ Review  Management Console
 - Click Queues and Streams
 
 
+# Review Source Code
+
+- Consumer Application
+
+[event-log-sink](../../../../../applications/sinks/event-log-sink)
+
+See Core Consumer [LoggingConsumer.java](../../../../../applications/sinks/event-log-sink/src/main/java/showcase/event/stream/rabbitmq/log/sink/functions/LoggingConsumer.java)
+
+```java
+@Component("loggingConsumer")
+public class LoggingConsumer implements Consumer<String> {
+    public LoggingConsumer()
+    {
+        log.info("Created LoggingConsumer");
+    }
+
+    @Override
+    public void accept(String text) {
+        log.info("CONSUMED: {} ",text);
+    }
+}
+```
+
+- Publisher Application
+
+[event-account-http-source](../../../../../applications/sources/event-account-http-source)
+
+See consumer [AccountController.java](../../../../../applications/sources/event-account-http-source/src/main/java/showcase/event/stream/rabbitmq/account/http/source/controller/AccountController.java)
+
+```java
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("accounts")
+@Slf4j
+public class AccountController {
+    private final MessageChannel publisher;
+
+    @PostMapping
+    public void publish(@RequestBody Account account) {
+        log.info("Publishing Account: {}",account);
+        publisher.send(MessageBuilder.withPayload(account)
+                .setHeader(ROUTING_KEY,account.getAccountType())
+                        .setHeader(MessageHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build());
+    }
+}
+```
+
+
+# Clean Up 
+
 Stop all applications
+
+Stop RabbitMQ Broker
+
+```shell
+podman rm -f rabbitmq
+```
