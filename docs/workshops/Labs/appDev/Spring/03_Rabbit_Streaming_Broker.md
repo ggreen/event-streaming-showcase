@@ -335,6 +335,22 @@ for i in {1..100}; do
 done;
 ```
 
+---------------------------
+# Review Source Code
+
+## Replay all messages
+
+
+See [RabbitConsumerConfig.java](../../../../../applications/sinks/event-log-sink/src/main/java/showcase/event/stream/rabbitmq/log/sink/RabbitConsumerConfig.java)
+
+Code Snippet
+
+```java
+    builder.subscriptionListener(
+                            subscriptionContext -> subscriptionContext
+                                    .offsetSpecification(OffsetSpecification.first()));
+```
+----------------------------
 # Clean Up
 
 Stop Applications/RabbitMQ

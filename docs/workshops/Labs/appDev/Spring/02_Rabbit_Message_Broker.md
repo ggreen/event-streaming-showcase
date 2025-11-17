@@ -373,6 +373,21 @@ open http://localhost:15672/#/queues/%2F/accounts.account.categories.event-log-a
 ```
 
 ----------------
+# Review Source Code
+
+## HTTP AMQP Source
+
+See [HttpPublisherController.kt](../../../../../applications/sources/http-amqp-source/src/main/kotlin/showcase/streaming/event/rabbitmq/streaming/account/controller/HttpPublisherController.kt)
+
+See project [http-amqp-source](../../../../../applications/sources/http-amqp-source)
+
+## JBC Sink DLQ config
+
+See [AccountConsumer.java](../../../../../applications/sinks/event-account-jdbc-sink/src/main/java/showcase/streaming/event/account/jdbc/sink/consumer/AccountConsumer.java)
+
+See Also [RabbitConsumerConfig.java](../../../../../applications/sinks/event-account-jdbc-sink/src/main/java/showcase/event/stream/rabbitmq/jdbc/sink/RabbitConsumerConfig.java)
+
+----------------
 
 # Cleanup
 
