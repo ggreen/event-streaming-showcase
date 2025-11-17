@@ -81,7 +81,9 @@ public class RabbitSuperStreamConfig {
         template.setMessageConverter(converter);
 
         template.setSuperStreamRouting(message -> {
-            return message.getApplicationProperties().get(ROUTING_KEY).toString();
+            var routingKey = message.getApplicationProperties().get(ROUTING_KEY).toString();
+            log.info("Routing to partition based on key: {}",routingKey);
+            return routingKey;
         });
         return template;
     }

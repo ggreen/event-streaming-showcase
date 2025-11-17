@@ -2,10 +2,6 @@
 
 **Prerequisite**
 
-Create the podman network (if not existing)
-```shell
-podman network create tanzu
-```
 
 - Download Source Code
 
@@ -96,16 +92,18 @@ curl -X 'POST' \
 }'
 ```
 
-Stop Consumer
+Replay all messages
 
-Start with options to replay all messages
+- Stop Consumer Ctrl-C
+- Start with options to replay all messages
 
 ```shell
 java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=accounts.account --spring.profiles.active=stream --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.containerType=STREAM --rabbitmq.streaming.offset=first
 ```
 
+Stop Consumer Ctrl-C
 
-Start From last
+Start from next message
 
 ```shell
 java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=accounts.account --spring.profiles.active=stream --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.containerType=STREAM --rabbitmq.streaming.offset=next
@@ -150,15 +148,13 @@ Review  Management Console
 - Click Queues and Streams
 
 
-
-
 # Shutdown/Cleanup
 
 Stop applications
 
 
 ---------------------------
-# 3 - Spring Filter Single Active Consumer
+# 3 - Spring Single Active Consumer
 
 
 Deploy Event Log Application
@@ -234,7 +230,7 @@ curl -X 'POST' \
 Review Logs for each
 
 
-Note message are routed by account id application get the logs events
+Note messages are routed by account type. See the application logs
 
 Change Id to test routing
 

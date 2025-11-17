@@ -166,10 +166,10 @@ public class AccountController {
 }
 ```
 
-
+--------------------------------
 # Clean Up 
 
-Stop all applications
+Stop all applications using CTRL-C
 
 Stop RabbitMQ Broker
 

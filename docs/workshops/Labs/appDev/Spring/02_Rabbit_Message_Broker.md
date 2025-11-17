@@ -17,16 +17,19 @@ deployment/local/containers/rabbit.sh
 ```
 
 - Open Management Console with credentials *guest/guest*
+
 ```shell
 open http://localhost:15672
 ```
 
-# 1 - Work Queues
+# 1—Work Queues
 
 ## Start Consumer
+
 ```shell
 java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar --spring.application.name=event-log-sink1   --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.group=event-log-sink --spring.profiles.active=ampq --spring.cloud.stream.bindings.input.destination=accounts.account --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true
 ```
+
 Start Another Consumer
 
 ```shell
@@ -107,7 +110,7 @@ Review  Management Console
 - Click Queues and Streams
 
 
-Stop Publisher and Consumers
+Stop Publisher and Consumers using CTRL-C
 
 ---------------------------
 # 2 - Direct Exchange Routing
@@ -183,13 +186,13 @@ curl -X 'POST' \
 ```
 
 
-Stop Publisher and Consumers
+Stop Publisher and Consumers using CTRL-C
 
 ---------------------------
 # 2 - Topic Exchange Routing
 
 
-Consumer Properties start with 
+Spring Cloud Stream Rabbit Consumer Properties start with 
 
     spring.cloud.stream.rabbit.bindings.input.consumer..
 
@@ -198,7 +201,9 @@ Consumer Properties start with
 ```shell
 java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar  --spring.application.name=event-log-premium  --server.port=0 --spring.cloud.stream.rabbit.bindings.input.consumer.exchangeType=topic --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true --spring.cloud.stream.bindings.input.destination=accounts.account.categories --spring.cloud.stream.rabbit.bindings.input.consumer.bindingRoutingKey="premium.#"
 ``` 
+
 Start Another Consumer
+
 ```shell
 java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar  --spring.application.name=event-log-standard --server.port=0 --spring.cloud.stream.rabbit.bindings.input.consumer.exchangeType=topic --spring.cloud.stream.rabbit.bindings.input.consumer.quorum.enabled=true --spring.cloud.stream.bindings.input.destination=accounts.account.categories --spring.cloud.stream.rabbit.bindings.input.consumer.bindingRoutingKey="standard.#"
 ```
@@ -209,7 +214,7 @@ java -jar applications/sinks/event-log-sink/target/event-log-sink-1.0.0.jar  --s
 Start Source
 
 ```shell
- java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar --amqp.exchange.direct=true  --spring.profiles.active=amqp --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account.categories
+ java -jar applications/sources/event-account-http-source/target/event-account-http-source-1.0.0.jar  --spring.profiles.active=amqp --server.port=8095 --spring.cloud.stream.bindings.output.destination=accounts.account.categories
 ```
 
 
@@ -224,7 +229,7 @@ Testing
   -d '{
   "id": "PR01",
   "name": "premium residential account 1",
-  "accountType": "standard.residential",
+  "accountType": "premium.residential",
   "status": "OPEN",
   "notes": "Notes for account",
   "location": {
@@ -295,7 +300,8 @@ java -jar applications/sinks/event-account-jdbc-sink/target/event-account-jdbc-s
 ```shell
 java -jar applications/sources/http-amqp-source/target/http-amqp-source-1.0.0.jar --spring.application.name="http-amqp-source" --spring.cloud.stream.bindings.output.destination=accounts.account.categories --server.port=8098
 ```
-Success Message
+
+Send Success Message
 
 ```shell
 curl -X 'POST' \

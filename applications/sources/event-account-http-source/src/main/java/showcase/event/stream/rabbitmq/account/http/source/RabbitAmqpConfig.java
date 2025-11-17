@@ -35,6 +35,7 @@ public class RabbitAmqpConfig {
     @Bean
     @ConditionalOnProperty(name = "amqp.exchange.direct", havingValue="true")
     public Exchange exchangeDirect() {
+        log.info("Creating direct exchange: {}",outputExchange);
         return ExchangeBuilder
                 .directExchange(outputExchange)
                 .build();
@@ -44,6 +45,7 @@ public class RabbitAmqpConfig {
     @ConditionalOnProperty
             (name = "amqp.exchange.direct", havingValue = "false", matchIfMissing = true)
     public Exchange exchangeDTopic() {
+        log.info("Creating direct topic: {}",outputExchange);
         return ExchangeBuilder
                 .topicExchange(outputExchange)
                 .build();
