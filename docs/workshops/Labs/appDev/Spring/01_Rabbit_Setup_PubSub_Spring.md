@@ -166,6 +166,22 @@ public class AccountController {
 }
 ```
 
+See [RabbitAmqpConfig.java](../../../../../applications/sources/event-account-http-source/src/main/java/showcase/event/stream/rabbitmq/account/http/source/RabbitAmqpConfig.java) with Message Channel Implementation
+
+```java
+ @Bean
+MessageChannel publisher(AmqpTemplate amqpTemplate)
+{
+    return (msg, timeout) ->{
+        var account = (Account)msg.getPayload();
+        amqpTemplate.convertAndSend(outputExchange,
+                msg.getHeaders()
+                        .get(ROUTING_KEY, String.class),account);
+        return true;
+    };
+}
+```
+
 --------------------------------
 # Clean Up 
 
