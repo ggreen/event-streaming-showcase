@@ -34,6 +34,7 @@
         <module>applications/processors/json-xml-processor</module>
         <module>applications/processors/freemarker-processor</module>
         <module>applications/processors/stream-sql-filter-processor</module>
+<!--        <module>applications/jms/jms-demo</module>-->
     </modules>
     <build>
         <pluginManagement>

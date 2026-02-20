@@ -1,5 +1,6 @@
 package showcase.streaming.event.rabbitmq.streaming.account
 
+import nyla.solutions.core.util.Organizer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Exchange
@@ -22,7 +23,6 @@ import org.springframework.context.annotation.Configuration
 class AmqpRabbitConfig {
 
     private val logger: Logger = LoggerFactory.getLogger("AmqpRabbitConfig")
-
     @Value("\${spring.rabbitmq.vhost:/}")
     private val virtualHost: String = ""
 
@@ -31,6 +31,9 @@ class AmqpRabbitConfig {
 
     @Value("\${spring.rabbitmq.password:guest}")
     private var password:  String = "guest";
+
+    @Value("\${spring.rabbitmq.port:5672}")
+    private val port: Int =  5672
 
     @Value("\${spring.rabbitmq.host:localhost}")
     private var hostname: String = "localhost";
@@ -54,12 +57,14 @@ class AmqpRabbitConfig {
         factory.setHost(hostname);
         factory.setUsername(username);
         factory.setPassword(password);
+        factory.setPort(port)
         factory.setVirtualHost(virtualHost)
+        factory.setClientProperties(Organizer.toMap("connection_name",applicationName))
 
         var tcf =  ThreadChannelConnectionFactory(factory.rabbitConnectionFactory);
         tcf.setConnectionNameStrategy(ConnectionNameStrategy { applicationName!! })
 
-        var connection = factory.rabbitConnectionFactory.newConnection()
+        var connection = factory.rabbitConnectionFactory.newConnection(applicationName)
         connection.close()
 
         return tcf
