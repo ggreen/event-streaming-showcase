@@ -28,6 +28,17 @@ In this demo, the AMQP messages are always forwarded across multiple clusters.
 Alternatively, the AMQP app can sends message to the amq.topic exchange.
 If this message can't be routed in the local Rabbit cluster, then the application can route it via the alternate exchange to the DC*.queue.to (shovel) queue.
 
+
+In addition to queue.to receiving unroutable requests via the alternate exchange, this queue can bind directly to amq.topic with a few more binding keys including:
+
+```text
+term.all.dc.all.#
+term.all.dc.dc-2.#
+dc.dc-2.#
+```
+
+So, this queue would receive any topics destined for other clusters/DC(s) and all other terminal specific requests that are unroutable in DC1
+
 # Getting Started
 
 Start RabbitMq
