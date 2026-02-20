@@ -32,8 +32,8 @@ If this message can't be routed in the local Rabbit cluster, then the applicatio
 In addition to queue.to receiving unroutable requests via the alternate exchange, this queue can bind directly to amq.topic with a few more binding keys including:
 
 ```text
-term.all.dc.all.#
-term.all.dc.dc-2.#
+mqtt.all.dc.all.#
+mqtt.all.dc.dc-2.#
 dc.dc-2.#
 ```
 
