@@ -23,6 +23,7 @@ from any AMQP publisher for messages sent to the routing clusters. MQTT Consumer
 
 In this demo, the AMQP messages are always forwarded across multiple clusters. Alternatively, the AMQP app can send messages to the amq.topic exchange.
 If this message can't be routed in the local Rabbit cluster, then the application can route it via the alternate exchange to the DC*.queue.to (shovel) queue.
+See [See RabbitMQ Alternate Exchange](https://www.rabbitmq.com/docs/ae)
 
 
 # Getting Started
