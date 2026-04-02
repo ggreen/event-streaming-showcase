@@ -6,7 +6,7 @@ See [Tanzu DataFlow for Kubernetes](https://techdocs.broadcom.com/us/en/vmware-t
 See [Tanzu DataFlow for Tanzu Platform](https://techdocs.broadcom.com/us/en/vmware-tanzu/data-solutions/tanzu-data-flow/2-0/tdf-tanzu/index.html)
 
 
-## Getting Started
+# Getting Started
 
 See Tanzu Data Flow documentation about.
 
