@@ -30,6 +30,9 @@ public class RabbitConfig {
     @Value("${app.queue.name:/queues/accounts}")
     private String queueName;
 
+    @Value("${app.delivery.delay.ms:0}")
+    private long deliverDelayMs;
+
 
     @Bean
     Connection connection() throws NamingException, JMSException {
@@ -49,7 +52,14 @@ public class RabbitConfig {
     MessageProducer messageProducer(Session session) throws JMSException {
         // Define a Queue destination
         var queue = session.createQueue(queueName);
-        return session.createProducer(queue);
+        var producer = session.createProducer(queue);
+
+        if(deliverDelayMs > 0)
+        {
+            log.info("Setting deliver delay to {} ms", deliverDelayMs);
+            producer.setDeliveryDelay(deliverDelayMs);
+        }
+        return producer;
     }
 
     @Bean
