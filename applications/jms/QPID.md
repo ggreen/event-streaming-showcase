@@ -31,6 +31,10 @@ x-selector-fields = ["JMSPriority", "category", "price", "in_stock"]
 accounts
 
 
+app.message.selector=status = 'ACTIVE' AND (state = 'NY' OR state = 'CA') AND city IN ('NY', 'LA', 'IM','ANI') AND zip LIKE '90%'
+
+status = 'ACTIVE' 
+
 
 ```shell
 rabbitmqadmin -u $TANZU_RABBIT_USERNAME -p $TANZU_RABBIT_PASSWORD declare queue --name accounts --arguments='{"x-queue-type": "jms", "x-selector-fields": ["name", "status","city", "state", "zip"]}'

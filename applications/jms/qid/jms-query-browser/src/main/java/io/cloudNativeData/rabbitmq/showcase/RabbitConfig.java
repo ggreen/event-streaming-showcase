@@ -1,6 +1,5 @@
 package io.cloudNativeData.rabbitmq.showcase;
 
-import io.cloudNativeData.rabbitmq.showcase.consumer.AccountConsumer;
 import jakarta.jms.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,30 +40,18 @@ public class RabbitConfig {
     }
 
     @Bean
-    Session session(Connection connection, AccountConsumer accountConsumer, Converter<String, Account> converter) throws NamingException, JMSException {
+    Session session(Connection connection) throws NamingException, JMSException {
 
         // Create a session (false = not transacted, AUTO_ACKNOWLEDGE)
         var session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        // Define a Queue destination
-        var queue = session.createQueue(queueName);
-
-        log.info("Using message selector: {}", messageSelector);
-
-        var consumer = session.createConsumer(queue,messageSelector);
-
-        consumer.setMessageListener(message -> {
-            if(message instanceof TextMessage txtMessage) {
-                try {
-                    accountConsumer.accept(converter.convert(txtMessage.getText()));
-                } catch (JMSException | RuntimeException e) {
-                    log.error(e.getMessage(), e);
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
         connection.start();
         return session;
+    }
+
+    @Bean
+    Queue queue( Session session) throws JMSException {
+
+        return  session.createQueue(queueName);
     }
 }
