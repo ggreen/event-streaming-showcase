@@ -68,15 +68,13 @@ curl -X 'POST' \
     "countryCode": "US"
   }
 }'
-```
 
-```shell
 curl -X 'POST' \
   'http://localhost:8077/accounts' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "id": "02",
+  "id": "04",
   "name": "Jill Smith",
   "accountType": "B",
   "status": "ACTIVE",

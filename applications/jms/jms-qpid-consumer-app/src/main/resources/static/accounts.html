@@ -157,16 +157,16 @@
             const fullAddress = `${loc.address || ''}, ${loc.cityTown || ''}, ${loc.stateProvince || ''} ${loc.zipPostalCode || ''}, ${loc.countryCode || ''}`.replace(/^,\s*|,\s*$/, '');
 
             row.innerHTML = `
-                    <td>${escapeHTML(account.id)}</td>
-                    <td><strong>${escapeHTML(account.name)}</strong></td>
-                    <td>${escapeHTML(account.accountType)}</td>
-                    <td><span class="badge">${escapeHTML(account.status)}</span></td>
-                    <td>${escapeHTML(fullAddress)}</td>
-                    <td>${escapeHTML(account.notes || '')}</td>
-                `;
+                <td>${escapeHTML(account.id)}</td>
+                <td><strong>${escapeHTML(account.name)}</strong></td>
+                <td>${escapeHTML(account.accountType)}</td>
+                <td><span class="badge">${escapeHTML(account.status)}</span></td>
+                <td>${escapeHTML(fullAddress)}</td>
+                <td>${escapeHTML(account.notes || '')}</td>
+            `;
 
-            // 3. Prepend to the top of the table body so newest records appear first
-            tbody.insertBefore(row, tbody.firstChild);
+            // 3. Append to the bottom of the table body so newest records appear last
+            tbody.appendChild(row);
         });
     }
 
