@@ -22,4 +22,6 @@ public class AccountConsumer implements Consumer<Account> {
         log.info("Received account {}", account);
         repository.save(account);
     }
+
+
 }
