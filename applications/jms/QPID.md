@@ -42,3 +42,26 @@ rabbitmqadmin -u $TANZU_RABBIT_USERNAME -p $TANZU_RABBIT_PASSWORD declare queue 
 
 podman exec -it rabbitmq bash
 rabbitmq-plugins enable rabbitmq_shovel rabbitmq_shovel_management
+
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8077/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "01",
+  "name": "Joe Smith",
+  "accountType": "B",
+  "status": "ACTIVE",
+  "notes": "Working hard",
+  "location": {
+    "id": "loc1",
+    "address": "123 Strait Street",
+    "cityTown": "NY",
+    "stateProvince": "NY",
+    "zipPostalCode": "90923",
+    "countryCode": "US"
+  }
+}'
+```

@@ -27,6 +27,9 @@ public class RabbitConfig {
     @Value("${app.queue.name:/queues/accounts}")
     private String queueName;
 
+    @Value("${app.message.selector}")
+    private String messageSelector;
+
 
     @Bean
     Connection connection() throws NamingException, JMSException {
@@ -44,7 +47,9 @@ public class RabbitConfig {
         // Define a Queue destination
         var queue = session.createQueue(queueName);
 
-        MessageConsumer consumer = session.createConsumer(queue);
+        log.info("Using message selector: {}", messageSelector);
+
+        var consumer = session.createConsumer(queue,messageSelector);
 
         consumer.setMessageListener(message -> {
             if(message instanceof TextMessage txtMessage) {
