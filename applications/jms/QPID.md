@@ -1,0 +1,44 @@
+
+
+
+
+
+```shell
+podman exec -it rabbitmq bash
+
+```
+
+```shell
+rabbitmq-plugins enable rabbitmq_amqp1_0 rabbitmq_jms_topic_exchange
+```
+```shell
+rabbitmq-plugins enable rabbitmq_jms
+```
+
+rabbitmq-plugins enable rabbitmq_jms_management
+
+```shell
+rabbitmq-plugins list
+```
+
+
+store.orders.queue
+x-queue-type = jms
+x-selector-fields = ["JMSPriority", "category", "price", "in_stock"]
+
+
+
+accounts
+
+
+
+```shell
+rabbitmqadmin -u $TANZU_RABBIT_USERNAME -p $TANZU_RABBIT_PASSWORD declare queue --name accounts --arguments='{"x-queue-type": "jms", "x-selector-fields": ["name", "status","city", "state", "zip"]}'
+
+  --vhost="/" \
+  --arguments='{"x-queue-type": "jms", }'
+```
+
+
+podman exec -it rabbitmq bash
+rabbitmq-plugins enable rabbitmq_shovel rabbitmq_shovel_management

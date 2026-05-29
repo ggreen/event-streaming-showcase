@@ -1,4 +1,4 @@
-# RabbitMQ and Kafka using Data Flow
+# RabbitMQ and Kafka integration using Data Flow
 
 See [Tanzu DataFlow for Kubernetes](https://techdocs.broadcom.com/us/en/vmware-tanzu/data-solutions/tanzu-data-flow-kubernetes/2-0/tdf-k8s/index-k8s.html)
 

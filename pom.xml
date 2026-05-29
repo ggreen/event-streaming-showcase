@@ -34,7 +34,9 @@
         <module>applications/processors/json-xml-processor</module>
         <module>applications/processors/freemarker-processor</module>
         <module>applications/processors/stream-sql-filter-processor</module>
-<!--        <module>applications/jms/jms-demo</module>-->
+        <module>applications/jms/jms-demo</module>
+        <module>applications/jms/jms-qpid-consumer-app</module>
+        <module>applications/jms/jms-qpid-producer-app</module>
     </modules>
     <build>
         <pluginManagement>

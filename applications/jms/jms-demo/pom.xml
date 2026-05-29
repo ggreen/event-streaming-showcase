@@ -41,6 +41,24 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>stream-client</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.rabbitmq.client</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!-- Source: https://mvnrepository.com/artifact/com.rabbitmq.client/amqp-client -->
+<!--		<dependency>-->
+<!--			<groupId>com.rabbitmq.client</groupId>-->
+<!--			<artifactId>amqp-client</artifactId>-->
+<!--			<version>1.0.0</version>-->
+<!--			<scope>compile</scope>-->
+<!--		</dependency>-->
+
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -60,6 +78,12 @@
 			<artifactId>spring-retry</artifactId>
 			<version>2.0.12</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.rabbitmq.client</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
