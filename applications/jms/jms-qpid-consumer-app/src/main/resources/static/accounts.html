@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live New Account Stream</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .counter-badge {
+            background-color: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .status-indicator {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+        /* Animation for newly arriving rows */
+        @keyframes highlightNew {
+            0% { background-color: #2ecc71; color: white; }
+            100% { background-color: transparent; }
+        }
+        .new-row {
+            animation: highlightNew 3s ease-out-all;
+        }
+        .badge {
+            background-color: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-container">
+    <div>
+        <h1>Live Account Stream <span class="counter-badge" id="new-count">0 New</span></h1>
+        <div class="status-indicator" id="status">Monitoring endpoint...</div>
+    </div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Address</th>
+        <th>Notes</th>
+    </tr>
+    </thead>
+    <tbody id="account-table-body">
+    <tr id="no-data-row">
+        <td colspan="6" style="text-align: center; color: #7f8c8d;">Waiting for new incoming accounts...</td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    const API_URL = '/accounts';
+
+    // A Set to track IDs we have already displayed
+    const seenAccountIds = new Set();
+    let totalNewRecordsFound = 0;
+    let isFirstLoad = true;
+
+    async function checkForNewAccounts() {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'GET',
+                headers: { 'Accept': '*/*' }
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const accounts = await response.json();
+
+            // Filter the API array down to ONLY records we haven't seen yet
+            const newAccounts = accounts.filter(account => !seenAccountIds.has(account.id));
+
+            if (newAccounts.length > 0) {
+                // Remove the placeholder row if it exists
+                const placeholder = document.getElementById('no-data-row');
+                if (placeholder) placeholder.remove();
+
+                appendNewAccounts(newAccounts);
+            }
+
+            document.getElementById('status').innerText = `Last checked: ${new Date().toLocaleTimeString()}`;
+            isFirstLoad = false;
+
+        } catch (error) {
+            console.error("Fetch failed:", error);
+            document.getElementById('status').innerText = "Connection error. Retrying...";
+        }
+    }
+
+    function appendNewAccounts(newAccounts) {
+        const tbody = document.getElementById('account-table-body');
+
+        newAccounts.forEach(account => {
+            // 1. Permanently remember this ID so it never shows up again
+            seenAccountIds.add(account.id);
+
+            // 2. Create the HTML markup row
+            const row = document.createElement('tr');
+
+            // Apply visual cue animation if it's an ongoing update (not the initial baseline load)
+            if (!isFirstLoad) {
+                row.classList.add('new-row');
+                totalNewRecordsFound++;
+                document.getElementById('new-count').innerText = `${totalNewRecordsFound} New`;
+            }
+
+            const loc = account.location || {};
+            const fullAddress = `${loc.address || ''}, ${loc.cityTown || ''}, ${loc.stateProvince || ''} ${loc.zipPostalCode || ''}, ${loc.countryCode || ''}`.replace(/^,\s*|,\s*$/, '');
+
+            row.innerHTML = `
+                    <td>${escapeHTML(account.id)}</td>
+                    <td><strong>${escapeHTML(account.name)}</strong></td>
+                    <td>${escapeHTML(account.accountType)}</td>
+                    <td><span class="badge">${escapeHTML(account.status)}</span></td>
+                    <td>${escapeHTML(fullAddress)}</td>
+                    <td>${escapeHTML(account.notes || '')}</td>
+                `;
+
+            // 3. Prepend to the top of the table body so newest records appear first
+            tbody.insertBefore(row, tbody.firstChild);
+        });
+    }
+
+    function escapeHTML(str) {
+        return String(str).replace(/[&<>"']/g, m => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+        })[m]);
+    }
+
+    // Initialize and look for updates every 3 seconds
+    checkForNewAccounts();
+    setInterval(checkForNewAccounts, 3000);
+</script>
+</body>
+</html>

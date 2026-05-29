@@ -69,3 +69,25 @@ curl -X 'POST' \
   }
 }'
 ```
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8077/accounts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "02",
+  "name": "Jill Smith",
+  "accountType": "B",
+  "status": "ACTIVE",
+  "notes": "Working hard",
+  "location": {
+    "id": "loc1",
+    "address": "123 Strait Street",
+    "cityTown": "NY",
+    "stateProvince": "NY",
+    "zipPostalCode": "90923",
+    "countryCode": "US"
+  }
+}'
+```
