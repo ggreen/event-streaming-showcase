@@ -14,8 +14,7 @@ import javax.naming.NamingException;
 
 @Configuration
 @Slf4j
-public class RabbitConfig {
-
+public class QpidConsumerConfig {
 
     @Value("${app.broker.url:amqp://localhost:5672}")
     private String brokerUrl;
