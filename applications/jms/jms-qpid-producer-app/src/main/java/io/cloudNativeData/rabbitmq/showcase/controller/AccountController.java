@@ -2,7 +2,6 @@ package io.cloudNativeData.rabbitmq.showcase.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.Nullable;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import showcase.streaming.event.account.domain.Account;
-import showcase.streaming.event.account.domain.Location;
 
+/**
+ * @author gregory green
+ */
 @RestController
 @RequestMapping("accounts")
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class AccountController {
 
     private final MessageChannel messageChannel;
 
-    @PostMapping
+    @PostMapping("account")
     public void sendAccount(@RequestBody Account account) {
 
         log.info("sending account: {}", account);
@@ -38,5 +39,10 @@ public class AccountController {
 
         messageChannel.send(message);
 
+    }
+
+    @PostMapping
+    public void sendAccounts(@RequestBody Iterable<Account> accounts) {
+        accounts.forEach(this::sendAccount);
     }
 }
