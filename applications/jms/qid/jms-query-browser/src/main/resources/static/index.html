@@ -1,6 +1,195 @@
-<h1>Query Browser</h1>
-<hr/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMS Message Query Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen p-8">
 
-<ul>
-    <li><a href="/swagger-ui.html">Swagger-UI</a></li>
-</ul>
+<div class="max-w-6xl mx-auto">
+    <header class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">JMS Message Selector Showcase</h1>
+            <p class="text-slate-500 mt-1">Query broker messages using REST endpoint filters.</p>
+        </div>
+        <div>
+            <a
+                    href="/swagger-ui.html"
+                    target="_blank"
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Swagger-UI
+            </a>
+        </div>
+    </header>
+
+    <div class="bg-white p-6 rounded-xl shadow-xs border border-slate-200 mb-8">
+        <form id="queryForm" class="space-y-4">
+            <div>
+                <label for="selectorInput" class="block text-sm font-semibold text-slate-700 mb-2">
+                    JMS Message Selector Expression
+                </label>
+                <input
+                        type="text"
+                        id="selectorInput"
+                        value="status = 'ACTIVE'"
+                        placeholder="e.g., status = 'ACTIVE' AND state = 'NY'"
+                        class="w-full px-4 py-3 font-mono text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+                        required
+                />
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-slate-400 font-mono">Endpoint: POST http://localhost:8899/jms/query</span>
+                <button
+                        type="submit"
+                        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-xs transition cursor-pointer"
+                >
+                    Execute Query
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="alertBox" class="hidden p-4 rounded-lg mb-6 text-sm font-medium"></div>
+
+    <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h2 class="font-bold text-slate-900">Query Results</h2>
+            <span id="recordCount" class="text-xs bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-semibold">0 Records Found</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                <tr class="bg-slate-100 text-slate-600 uppercase text-xs tracking-wider border-b border-slate-200">
+                    <th class="py-3 px-4 font-semibold">ID</th>
+                    <th class="py-3 px-4 font-semibold">Name</th>
+                    <th class="py-3 px-4 font-semibold">Status</th>
+                    <th class="py-3 px-4 font-semibold">Acct Type</th>
+                    <th class="py-3 px-4 font-semibold">Address</th>
+                    <th class="py-3 px-4 font-semibold">City/Town</th>
+                    <th class="py-3 px-4 font-semibold">State/Prov</th>
+                    <th class="py-3 px-4 font-semibold">Zip/Postal</th>
+                    <th class="py-3 px-4 font-semibold">Notes</th>
+                </tr>
+                </thead>
+                <tbody id="resultsBody" class="divide-y divide-slate-100 text-sm">
+                <tr>
+                    <td colspan="9" class="text-center py-8 text-slate-400 italic">
+                        No data loaded. Click "Execute Query" to fetch data.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('queryForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const queryValue = document.getElementById('selectorInput').value;
+        const resultsBody = document.getElementById('resultsBody');
+        const recordCount = document.getElementById('recordCount');
+        const alertBox = document.getElementById('alertBox');
+
+        // Reset UI States
+        alertBox.className = "hidden";
+        resultsBody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="text-center py-8 text-blue-600 font-medium animate-pulse">
+                        Querying backend endpoint...
+                    </td>
+                </tr>
+            `;
+
+        try {
+            const response = await fetch('/jms/query', {
+                method: 'POST',
+                headers: {
+                    'accept': '*/*',
+                    'Content-Type': 'application/json'
+                },
+                body: queryValue
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server returned status ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            renderTable(data);
+
+        } catch (error) {
+            // Show Error Alert
+            alertBox.textContent = `Error: ${error.message}. Ensure your local backend is running and CORS is configured.`;
+            alertBox.className = "p-4 rounded-lg mb-6 text-sm font-medium bg-red-50 text-red-700 border border-red-200";
+
+            // Reset Table
+            resultsBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center py-8 text-red-400 italic">
+                            Failed to fetch data.
+                        </td>
+                    </tr>
+                `;
+            recordCount.textContent = "0 Records Found";
+        }
+    });
+
+    function renderTable(records) {
+        const resultsBody = document.getElementById('resultsBody');
+        const recordCount = document.getElementById('recordCount');
+
+        // Clear table
+        resultsBody.innerHTML = '';
+        recordCount.textContent = `${records.length} Record(s) Found`;
+
+        if (records.length === 0) {
+            resultsBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center py-8 text-slate-400 italic">
+                            No records matched your selector criteria.
+                        </td>
+                    </tr>
+                `;
+            return;
+        }
+
+        // Loop and build table rows
+        records.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50 transition-colors";
+
+            // Safe extraction of location parameters to prevent runtime crashes if null
+            const location = item.location || {};
+
+            tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono text-xs font-semibold text-slate-600">${item.id || ''}</td>
+                    <td class="py-3 px-4 font-medium text-slate-900">${item.name || ''}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold ${item.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600'}">
+                            ${item.status || ''}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-slate-600">${item.accountType || ''}</td>
+                    <td class="py-3 px-4 text-slate-600">${location.address || ''}</td>
+                    <td class="py-3 px-4 text-slate-600">${location.cityTown || ''}</td>
+                    <td class="py-3 px-4 text-slate-600">${location.stateProvince || ''}</td>
+                    <td class="py-3 px-4 font-mono text-xs text-slate-600">${location.zipPostalCode || ''}</td>
+                    <td class="py-3 px-4 text-xs text-slate-500 italic max-w-xs truncate" title="${item.notes || ''}">
+                        ${item.notes || ''}
+                    </td>
+                `;
+            resultsBody.appendChild(tr);
+        });
+    }
+</script>
+</body>
+</html>
