@@ -16,16 +16,16 @@ import javax.naming.NamingException;
 public class RabbitConfig {
 
 
-    @Value("${app.broker.url:amqp://localhost:5672}")
+    @Value("${spring.rabbitmq.addresses:amqp://localhost:5672}")
     private String brokerUrl;
 
-    @Value("${app.broker.username}")
+    @Value("${spring.rabbitmq.username}")
     private String username;
 
-    @Value("${app.broker.password}")
+    @Value("${spring.rabbitmq.password}")
     private String password;
 
-    @Value("${app.queue.name:/queues/accounts}")
+    @Value("${app.queue.name:accounts}")
     private String queueName;
 
     @Value("${app.message.selector}")
@@ -52,6 +52,6 @@ public class RabbitConfig {
     @Bean
     Queue queue( Session session) throws JMSException {
 
-        return  session.createQueue(queueName);
+        return  session.createQueue("/queues/"+queueName);
     }
 }
