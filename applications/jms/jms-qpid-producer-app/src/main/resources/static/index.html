@@ -1,6 +1,303 @@
-<h1>Account Source</h1>
-<hr/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Account</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2c3e50;
+            padding: 15px 30px;
+            margin: -40px -40px 40px -40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .navbar h2 {
+            margin: 0;
+            color: white;
+            font-size: 20px;
+        }
+        .swagger-link {
+            background-color: #85ea2d;
+            color: #131212;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+        .swagger-link:hover {
+            background-color: #72cb25;
+        }
+        .form-container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #f4f7f6;
+            padding-bottom: 8px;
+        }
+        .form-section {
+            margin-bottom: 25px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #4a5568;
+        }
+        input, textarea, select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        button {
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 1;
+            transition: background-color 0.2s;
+        }
+        button[type="submit"] {
+            background-color: #3498db;
+            color: white;
+        }
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+        .btn-random {
+            background-color: #9b59b6;
+            color: white;
+        }
+        .btn-random:hover {
+            background-color: #8e44ad;
+        }
+        #response-message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 4px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+        .success { background-color: #def7ec; color: #03543f; border: 1px solid #84e1bc; }
+        .error { background-color: #fde8e8; color: #9b1c1c; border: 1px solid #f8b4b4; }
+    </style>
+</head>
+<body>
 
-<ul>
-    <li><a href="/swagger-ui.html">Swagger-UI</a></li>
-</ul>
+<div class="navbar">
+    <h2>Account Management Portal</h2>
+    <a href="/swagger-ui.html" class="swagger-link" target="_blank">Swagger-UI</a>
+</div>
+
+<div class="form-container">
+    <form id="accountForm">
+        <div class="form-section">
+            <h3>Account Details</h3>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="acc-id">Account ID</label>
+                    <input type="text" id="acc-id" name="id" placeholder="e.g., ACC-123" required>
+                </div>
+                <div class="form-group">
+                    <label for="acc-name">Account Name</label>
+                    <input type="text" id="acc-name" name="name" placeholder="e.g., John Doe" required>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="acc-type">Account Type</label>
+                    <input type="text" id="acc-type" name="accountType" placeholder="e.g., Premium" required>
+                </div>
+                <div class="form-group">
+                    <label for="acc-status">Status</label>
+                    <select id="acc-status" name="status">
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="acc-notes">Notes</label>
+                <textarea id="acc-notes" name="notes" rows="3" placeholder="Optional internal descriptions..."></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Location Details</h3>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="loc-id">Location ID</label>
+                    <input type="text" id="loc-id" name="loc_id" placeholder="e.g., LOC-999">
+                </div>
+                <div class="form-group">
+                    <label for="loc-address">Street Address</label>
+                    <input type="text" id="loc-address" name="loc_address" placeholder="123 Main St">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="loc-city">City / Town</label>
+                    <input type="text" id="loc-city" name="loc_cityTown" placeholder="Metropolis">
+                </div>
+                <div class="form-group">
+                    <label for="loc-state">State / Province</label>
+                    <input type="text" id="loc-state" name="loc_stateProvince" placeholder="NY">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="loc-zip">Zip / Postal Code</label>
+                    <input type="text" id="loc-zip" name="loc_zipPostalCode" placeholder="10001">
+                </div>
+                <div class="form-group">
+                    <label for="loc-country">Country Code</label>
+                    <input type="text" id="loc-country" name="loc_countryCode" placeholder="US" maxlength="3">
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="btn-random" id="btnRandom">Generate Random Account</button>
+            <button type="submit">Submit Account Information</button>
+        </div>
+    </form>
+
+    <div id="response-message"></div>
+</div>
+
+<script>
+    // Data Pools for Generating Random Accounts
+    const firstNames = ['James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth'];
+    const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
+    const types = ['Standard', 'Premium', 'Enterprise', 'Partner', 'Trial', 'VIP'];
+    const statuses = ['ACTIVE', 'PENDING', 'INACTIVE'];
+    const streets = ['Oak St', 'Pine Rd', 'Maple Ave', 'Cedar Ln', 'Washington Blvd', 'Broadway', 'Elm St', 'River Rd'];
+    const cities = [
+        { city: 'New York', state: 'NY', zip: '10001' },
+        { city: 'Los Angeles', state: 'CA', zip: '90001' },
+        { city: 'Chicago', state: 'IL', zip: '60601' },
+        { city: 'Houston', state: 'TX', zip: '77001' },
+        { city: 'Phoenix', state: 'AZ', zip: '85001' }
+    ];
+    const notesOptions = ['Referred via marketing campaign.', 'Requires validation confirmation.', 'Migration account profile.', 'High priority onboarding focus.', ''];
+
+    // Random Generation Execution
+    document.getElementById('btnRandom').addEventListener('click', function() {
+        const randIndex = (arr) => Math.floor(Math.random() * arr.length);
+        const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const selectedCity = cities[randIndex(cities)];
+        const generatedName = `${firstNames[randIndex(firstNames)]} ${lastNames[randIndex(lastNames)]}`;
+        const uniqueSeed = randomInt(100, 999);
+
+        document.getElementById('acc-id').value = `ACC-${uniqueSeed}-${randomInt(10,99)}`;
+        document.getElementById('acc-name').value = generatedName;
+        document.getElementById('acc-type').value = types[randIndex(types)];
+        document.getElementById('acc-status').value = statuses[randIndex(statuses)];
+        document.getElementById('acc-notes').value = notesOptions[randIndex(notesOptions)];
+
+        document.getElementById('loc-id').value = `LOC-${uniqueSeed}`;
+        document.getElementById('loc-address').value = `${randomInt(100, 9999)} ${streets[randIndex(streets)]}`;
+        document.getElementById('loc-city').value = selectedCity.city;
+        document.getElementById('loc-state').value = selectedCity.state;
+        document.getElementById('loc-zip').value = selectedCity.zip;
+        document.getElementById('loc-country').value = 'US';
+
+        // Dynamic success message clean reset upon new creation
+        document.getElementById('response-message').style.display = 'none';
+    });
+
+    // Form submission processing
+    document.getElementById('accountForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const msgDiv = document.getElementById('response-message');
+        msgDiv.style.display = 'none';
+
+        const payload = {
+            id: document.getElementById('acc-id').value,
+            name: document.getElementById('acc-name').value,
+            accountType: document.getElementById('acc-type').value,
+            status: document.getElementById('acc-status').value,
+            notes: document.getElementById('acc-notes').value,
+            location: {
+                id: document.getElementById('loc-id').value,
+                address: document.getElementById('loc-address').value,
+                cityTown: document.getElementById('loc-city').value,
+                stateProvince: document.getElementById('loc-state').value,
+                zipPostalCode: document.getElementById('loc-zip').value,
+                countryCode: document.getElementById('loc-country').value
+            }
+        };
+
+        try {
+            const response = await fetch('http://localhost:8077/accounts/account', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                msgDiv.className = 'success';
+                msgDiv.innerText = 'Account successfully submitted!';
+                // Notice: form.reset() has been purposefully excluded here to fulfill your request
+            } else {
+                throw new Error(`Server responded with code ${response.status}`);
+            }
+        } catch (error) {
+            msgDiv.className = 'error';
+            msgDiv.innerText = `Submission failed: ${error.message}`;
+        } finally {
+            msgDiv.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>
