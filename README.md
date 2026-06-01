@@ -43,3 +43,8 @@ Kubernetes Demos
 Industry Demos
 
 - [Insurance - Claims - DataFlow on Cloud Foundry](docs/DEMO/cloudFoundry/insurance/Insurance-demo.md)
+
+
+JMS 
+
+- [Apache Qpid - Message Selector, Queue Browser and more](applications/jms/qid) 
