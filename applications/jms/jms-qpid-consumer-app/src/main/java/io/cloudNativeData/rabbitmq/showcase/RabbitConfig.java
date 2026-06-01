@@ -3,6 +3,9 @@ package io.cloudNativeData.rabbitmq.showcase;
 import io.cloudNativeData.rabbitmq.showcase.consumer.AccountConsumer;
 import jakarta.jms.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,23 +17,32 @@ import javax.naming.NamingException;
 
 @Configuration
 @Slf4j
-public class QpidConsumerConfig {
+public class RabbitConfig {
 
     @Value("${app.broker.url:amqp://localhost:5672}")
     private String brokerUrl;
 
-    @Value("${app.broker.username}")
+    @Value("${spring.rabbitmq.username}")
     private String username;
 
-    @Value("${app.broker.password}")
+    @Value("${spring.rabbitmq.password}")
     private String password;
 
-    @Value("${app.queue.name:/queues/accounts}")
+    @Value("${app.queue.name}")
     private String queueName;
 
     @Value("${app.message.selector}")
     private String messageSelector;
 
+    @Bean
+    public Queue jmsQueue(AmqpAdmin amqpAdmin) {
+        var queue = QueueBuilder.durable(queueName)
+                .withArgument("x-queue-type", "jms")
+                .build();
+
+        amqpAdmin.declareQueue(queue);
+        return queue;
+    }
 
     @Bean
     Connection connection() throws NamingException, JMSException {
@@ -40,13 +52,13 @@ public class QpidConsumerConfig {
     }
 
     @Bean
-    Session session(Connection connection, AccountConsumer accountConsumer, Converter<String, Account> converter) throws NamingException, JMSException {
+    Session session(Connection connection, Queue amqQueue, AccountConsumer accountConsumer, Converter<String, Account> converter) throws NamingException, JMSException {
 
         // Create a session (false = not transacted, AUTO_ACKNOWLEDGE)
         var session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         // Define a Queue destination
-        var queue = session.createQueue(queueName);
+        var queue = session.createQueue("/queues/"+amqQueue.getActualName());
 
         log.info("Using message selector: {}", messageSelector);
 
