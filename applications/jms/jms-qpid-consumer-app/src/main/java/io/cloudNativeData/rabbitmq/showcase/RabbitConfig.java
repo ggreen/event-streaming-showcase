@@ -14,12 +14,14 @@ import showcase.streaming.event.account.domain.Account;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @Slf4j
 public class RabbitConfig {
 
-    @Value("${app.broker.url:amqp://localhost:5672}")
+    @Value("${spring.rabbitmq.addresses:amqp://localhost:5672}")
     private String brokerUrl;
 
     @Value("${spring.rabbitmq.username}")
@@ -34,10 +36,16 @@ public class RabbitConfig {
     @Value("${app.message.selector}")
     private String messageSelector;
 
+    @Value("#{'${app.queue.selector-fields}'.split(',')}")
+    private List<String> selectorFields;
+
     @Bean
     public Queue jmsQueue(AmqpAdmin amqpAdmin) {
         var queue = QueueBuilder.durable(queueName)
-                .withArgument("x-queue-type", "jms")
+                .withArguments(
+                        Map.of("x-queue-type", "jms",
+                                "x-selector-fields",selectorFields)
+                                )
                 .build();
 
         amqpAdmin.declareQueue(queue);

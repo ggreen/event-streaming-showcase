@@ -5,7 +5,7 @@ Starting Tanzu RabbitMQ
 
 
 ```shell
-PLUGINS="rabbitmq_jms,rabbitmq_jms_management rabbitmq_amqp1_0,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stream,rabbitmq_stream_browser,rabbitmq_stream_management,rabbitmq_delayed_queue"
+PLUGINS="rabbitmq_jms,rabbitmq_jms_management,rabbitmq_amqp1_0,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stream,rabbitmq_stream_browser,rabbitmq_stream_management,rabbitmq_delayed_queue"
 
 echo "Starting Tanzu RabbitMQ with initial plugins: $PLUGINS..."
 

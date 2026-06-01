@@ -18,21 +18,20 @@ import javax.naming.NamingException;
 public class RabbitConfig {
 
 
-    @Value("${app.broker.url:amqp://localhost:5672}")
+    @Value("${spring.rabbitmq.addresses:amqp://localhost:5672}")
     private String brokerUrl;
 
-    @Value("${app.broker.username}")
+    @Value("${spring.rabbitmq.username}")
     private String username;
 
-    @Value("${app.broker.password}")
+    @Value("${spring.rabbitmq.password}")
     private String password;
 
-    @Value("${app.queue.name:/queues/accounts}")
+    @Value("${app.queue.name:accounts}")
     private String queueName;
 
     @Value("${app.delivery.delay.ms:0}")
     private long deliverDelayMs;
-
 
     @Bean
     Connection connection() throws NamingException, JMSException {
@@ -51,7 +50,7 @@ public class RabbitConfig {
     @Bean
     MessageProducer messageProducer(Session session) throws JMSException {
         // Define a Queue destination
-        var queue = session.createQueue(queueName);
+        var queue = session.createQueue("/queues/"+queueName);
         var producer = session.createProducer(queue);
 
         if(deliverDelayMs > 0)

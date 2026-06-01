@@ -1,9 +1,6 @@
 package io.cloudNativeData.rabbitmq.showcase.controller;
 
-import jakarta.jms.JMSContext;
-import jakarta.jms.Message;
-import jakarta.jms.Queue;
-import jakarta.jms.QueueBrowser;
+import jakarta.jms.*;
 import lombok.SneakyThrows;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +27,7 @@ class QueryControllerTest {
     @Mock
     private Queue queue;
     @Mock
-    private JMSContext session;
+    private Session session;
     @Mock
     private Converter<Message, Account> converter;
 
