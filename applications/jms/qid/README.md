@@ -4,6 +4,10 @@
 This project showcased using the new Tanzu RabbitMQ
 JMS Queue type.
 
+![rabbitmg-spring-jms-qpid.png](docs/img/rabbitmg-spring-jms-qpid.png)
+
+## Getting Started
+
 Starting Tanzu RabbitMQ
 
 ```shell
