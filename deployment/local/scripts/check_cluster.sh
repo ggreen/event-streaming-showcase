@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 # RabbitMQ configuration (add list of nodes to check in a single cluster)
+# Note 3 identical URLs are added for demo purposes only to represent a typical 3 broker cluster
 URLS=(
+  "http://localhost:15672/api/vhosts"
   "http://localhost:15672/api/vhosts"
   "http://localhost:15672/api/vhosts"
 )
