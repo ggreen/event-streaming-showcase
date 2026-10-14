@@ -44,9 +44,21 @@ podman exec -it tanzu-rabbitmq-upstream  rabbitmqctl set_policy --vhost "vhost1"
 curl -i -u vmware:tanzu -H "Content-Type: application/json" \
   -X PUT http://localhost:15672/api/queues/vhost1/q1.quorum \
   -d '{"durable": true, "arguments": {"x-queue-type": "quorum"}}'
+  
+  
+curl -i -u "vmware:tanzu" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  -d '{
+    "routing_key": "#",
+    "arguments": {}
+  }' \
+  "http://localhost:15672/api/bindings/vhost1/e/amq.topic/q/q1.quorum"
 
-
+podman exec -it tanzu-rabbitmq-upstream  rabbitmqctl enable_warm_standby
 podman exec -it tanzu-rabbitmq-upstream  rabbitmqctl standby_replication_status
+
+
 ```
 
 
@@ -70,6 +82,26 @@ podman run -it --rm \
   -e RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-rabbitmq_stream advertised_host localhost -rabbitmq_stream advertised_port 5553" \
   rabbitmq.packages.broadcom.com/vmware-tanzu-rabbitmq:4.3.0
 ```
+
+
+```shell
+curl -i -u vmware:tanzu \
+  -H "Content-Type: application/json" \
+  -X POST \
+  -d '{
+    "properties": {
+      "content_type": "application/json",
+      "delivery_mode": 2
+    },
+    "routing_key": "account",
+    "payload": "Hello, RabbitMQ!",
+    "payload_encoding": "string"
+  }' \
+  "http://localhost:15672/api/exchanges/vhost1/amq.topic/publish"
+```
+
+
+Posting upstream messages
 
 
 ```shell
