@@ -1,0 +1,46 @@
+{
+  "vhosts": [
+    { "name": "/" },
+    { "name": "rabbitmq_schema_definition_sync" },
+    {
+      "name": "vhost1",
+      "tags": ["standby_replication"]
+    }
+  ],
+  "users": [
+    {
+      "name": "schema-replicator",
+      "password_hash": "ReplPassword123",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ["administrator"]
+    }
+  ],
+  "permissions": [
+    {
+      "user": "schema-replicator",
+      "vhost": "vhost1",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "vmware",
+      "vhost": "vhost1",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "policies": [
+    {
+      "vhost": "vhost1",
+      "name": "osr",
+      "pattern": "^.*",
+      "apply-to": "queues",
+      "definition": {
+        "remote-dc-replicate": true
+      },
+      "priority": 0
+    }
+  ]
+}
