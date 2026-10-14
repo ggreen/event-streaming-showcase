@@ -1,14 +1,27 @@
-# Warm StandBY Demonstrations
+# Warm Standby Demonstrations
 
 
 The following provided details to demonstration Tanzu RabbitMQ's 
-warm standby replication.
+warm standby replication for High Availability.
 
+![img_1.png](img_1.png)
+
+**Prerequisite**
+- [Tanzu RabbitMQ OCI](https://techdocs.broadcom.com/us/en/vmware-tanzu/data-solutions/tanzu-rabbitmq-oci/4-3/tanzu-rabbitmq-oci-image/site-overview.html)
+- Podman
+- Linux/Bash
+
+
+This demo uses RabbitMQ Warm Standby Plugin to replicate messages from an upstream broker to a downstream broker.
+
+It uses a reference implementation automated script [check_cluster.sh](../../../../deployment/local/scripts/check_cluster.sh)  to monitor the status of the upstream. Whenever there are consistent upstream issues, the script will promote the downstream broker to be the primary.
+
+## Demo Instructions
 
 1. Start Upstream Broker
 
 ```shell
-PLUGINS="rabbitmq_schema_definition_sync,rabbitmq_standby_replication_delayed_queue,rabbitmq_standby_replication,rabbitmq_jms,rabbitmq_jms_management,rabbitmq_amqp1_0,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stream,rabbitmq_stream_browser,rabbitmq_stream_management,rabbitmq_delayed_queue, rabbitmq_standby_replication_delayed_queue,rabbitmq_warm_standby,rabbitmq_schema_definition_sync_prometheus,rabbitmq_standby_replication_prometheus,rabbitmq_standby_replication_delayed_queue_prometheus,rabbitmq_web_amqp,rabbitmq_lint_management"
+PLUGINS="rabbitmq_schema_definition_sync,rabbitmq_standby_replication_delayed_queue,rabbitmq_standby_replication,rabbitmq_jms,rabbitmq_jms_management,rabbitmq_amqp1_0,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stream,rabbitmq_stream_browser,rabbitmq_stream_management,rabbitmq_delayed_queue,rabbitmq_warm_standby,rabbitmq_schema_definition_sync_prometheus,rabbitmq_standby_replication_prometheus,rabbitmq_standby_replication_delayed_queue_prometheus,rabbitmq_web_amqp,rabbitmq_lint_management"
 
 echo "Starting Tanzu RabbitMQ with initial plugins: $PLUGINS..."
 
@@ -37,11 +50,11 @@ podman exec -it tanzu-rabbitmq-upstream rabbitmqctl add_user offsite-replicator 
 
 podman exec -it tanzu-rabbitmq-upstream rabbitmqctl set_permissions -p vhost1 offsite-replicator ". *" ". *" ". *"
 
+
+
 podman exec -it tanzu-rabbitmq-upstream rabbitmqctl set_permissions -p vhost1 schema-replicator ". *" ". *" ". *"
 
 podman exec -it tanzu-rabbitmq-upstream rabbitmqctl set_permissions -p vhost1 vmware ". *" ". *" ". *"
-
-podman exec -it tanzu-rabbitmq-upstream rabbitmqctl set_permissions -p vhost1 offsite-replicator ". *" ". *" ". *"
 
 echo "Check the virtual host tags by running"
 
@@ -74,7 +87,7 @@ podman exec -it tanzu-rabbitmq-upstream  rabbitmqctl standby_replication_status
 3. Start Downstream Broker
 
 ```shell
-PLUGINS="rabbitmq_schema_definition_sync,rabbitmq_standby_replication_delayed_queue,rabbitmq_standby_replication,rabbitmq_jms,rabbitmq_jms_management,rabbitmq_amqp1_0,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stream,rabbitmq_stream_browser,rabbitmq_stream_management,rabbitmq_delayed_queue, rabbitmq_standby_replication_delayed_queue,rabbitmq_warm_standby,rabbitmq_standby_replication_prometheus,rabbitmq_schema_definition_sync_prometheus,rabbitmq_standby_replication_delayed_queue_prometheus,rabbitmq_lint_management"
+PLUGINS="rabbitmq_schema_definition_sync,rabbitmq_standby_replication_delayed_queue,rabbitmq_standby_replication,rabbitmq_jms,rabbitmq_jms_management,rabbitmq_amqp1_0,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stream,rabbitmq_stream_browser,rabbitmq_stream_management,rabbitmq_delayed_queue,rabbitmq_warm_standby,rabbitmq_standby_replication_prometheus,rabbitmq_schema_definition_sync_prometheus,rabbitmq_standby_replication_delayed_queue_prometheus,rabbitmq_lint_management"
 
 echo "Starting Tanzu RabbitMQ Downstream with plugins..."
 
