@@ -38,7 +38,7 @@ Kubernetes Demos
 - [SCDF with Postgres](docs/DEMO/k8/SCDF/SCDF_with_Postgres_k8.md)
 - [API Flow Control Throttling](docs/DEMO/k8/SCDF/API_FLOW_CONTROL_THROTTLING.md)
 - [RabbitMQ monitoring](docs/DEMO/k8/monitoring/RABBITMQ_Monitoring.md)
-- [Warm Stand By Replication](docs/DEMO/Local/HA/Warm_standby_fallover.md)
+- [Warm Standby Replication](docs/DEMO/Local/HA/Warm_standby_fallover.md)
 
 
 Industry Demos
