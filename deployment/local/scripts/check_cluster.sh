@@ -5,7 +5,8 @@
 
 # RabbitMQ configuration
 URL="http://localhost:15672/api/vhosts"
-promote_url="http://localhost:15673/api/tanzu/osr/standby/promote"
+#promote_url="http://localhost:15673/api/tanzu/osr/standby/promote"
+promote_url="http://localhost:15673/api/tanzu/osr/downstream/promote"
 
 USER="vmware"
 PASS="tanzu"
@@ -18,7 +19,7 @@ promoted=false
 promote_downstream_cluster() {
   echo "ACTION: Initiating failover — Promoting downstream cluster..."
 
-  local promote_url="http://localhost:15673/api/tanzu/osr/downstream/promote"
+
 
   # Temporary file to capture stderr (curl connection errors)
   local curl_err_file
