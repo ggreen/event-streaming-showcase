@@ -2,7 +2,7 @@
 
 
 The following provided details to demonstration Tanzu RabbitMQ's 
-warm standby replication for High Availability.
+warm standby replication for Disaster Recovery.
 
 ![img_1.png](img_1.png)
 
@@ -79,8 +79,6 @@ curl -i -u "vmware:tanzu" \
 
 podman exec -it tanzu-rabbitmq-upstream  rabbitmqctl enable_warm_standby
 podman exec -it tanzu-rabbitmq-upstream  rabbitmqctl standby_replication_status
-
-
 ```
 
 
