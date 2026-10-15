@@ -1,7 +1,40 @@
 #!/usr/bin/env bash
+
 # ==============================================================================
-# RabbitMQ Standby Replication - Health Check & DR Automation Script
+# RabbitMQ Warm Standby Replication - Health Checks and Disaster Recovery
+#
+# IMPORTANT: This script is a reference implementation, not a complete,
+# production-ready disaster recovery solution.
+#
+# A warm standby provides a recovery target for disaster recovery (DR), not
+# an instantaneous or lossless switchover. Replication is asynchronous, so
+# messages or state changes may not have reached the standby when the primary
+# site fails. Therefore, a zero Recovery Point Objective (RPO) is not guaranteed.
+#
+# Promoting the standby is a significant operational event, not a routine
+# response to a failed health check. Promotion should normally require human
+# approval or be gated by multiple independent health signals and confirmation
+# that the former primary has been fenced to prevent it from accepting writes.
+#
+# Promotion is only one step in the overall failover procedure. This script
+# does NOT implement or guarantee the following:
+#
+#   - Redirecting client traffic, such as updating DNS or load balancers.
+#   - Fencing the former primary to prevent it from resuming service and
+#     causing a split-brain scenario.
+#   - Switching the promoted cluster into the required active operating mode.
+#   - Disconnecting the promoted cluster from the former upstream, where
+#     required by the replication architecture.
+#   - Handling post-promotion schema and metadata synchronization, consistency
+#     checks, replication lag, or data divergence.
+#   - Verifying end-to-end readiness of queues, publishers, consumers, and
+#     dependent applications after failover.
+#
+# These procedures must be defined, tested, and documented separately.
+# A successful promotion API response does not prove that disaster recovery
+# is complete or that the standby is safe to receive production traffic.
 # ==============================================================================
+
 
 set -euo pipefail
 

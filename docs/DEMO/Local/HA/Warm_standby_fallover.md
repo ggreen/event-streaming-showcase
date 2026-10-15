@@ -1,20 +1,23 @@
-# Warm Standby Demonstrations
+# Warm Standby Disaster Recovery Demonstration
 
+This demonstration showcases Tanzu RabbitMQ Warm Standby Replication for disaster recovery (DR), illustrating how messages are replicated from an upstream broker to a downstream standby broker and how the standby can be promoted when the upstream experiences sustained failures.
 
-The following provided details to demonstration Tanzu RabbitMQ's 
-warm standby replication for Disaster Recovery.
 
 ![img_1.png](img_1.png)
 
-**Prerequisite**
+
+## Prerequisites
 - [Tanzu RabbitMQ OCI](https://techdocs.broadcom.com/us/en/vmware-tanzu/data-solutions/tanzu-rabbitmq-oci/4-3/tanzu-rabbitmq-oci-image/site-overview.html)
 - Podman
 - Linux/Bash
 
+## Overview
 
-This demo uses RabbitMQ Warm Standby Plugin to replicate messages from an upstream broker to a downstream broker.
+This demonstration uses the RabbitMQ Warm Standby Plugin to replicate messages from an upstream broker to a downstream broker, which serves as the standby for disaster recovery.
 
-It uses a reference implementation automated script [check_cluster.sh](../../../../deployment/local/scripts/check_cluster.sh)  to monitor the status of the upstream. Whenever there are consistent upstream issues, the script will promote the downstream broker to be the primary.
+A reference implementation, [check_cluster.sh](../../../../deployment/local/scripts/check_cluster.sh) , monitors the health of the upstream broker. If consecutive health checks indicate a sustained upstream outage, the script initiates promotion of the downstream broker to become the primary.
+
+Note: This is a demonstration implementation, not a complete production-ready disaster recovery solution. Replication is asynchronous, so zero data loss is not guaranteed. Safe failover also requires appropriate fencing of the former primary, client traffic redirection, and verification that the promoted broker is ready to serve traffic.
 
 ## Demo Instructions
 
